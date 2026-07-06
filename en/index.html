@@ -16,9 +16,9 @@
     --slate: #51707a;
     --ochre: #C97A3D;
     --ink-text: #2B2018;
-    --font-display: "Noto Serif", "Georgia", "Times New Roman", serif;
-    --font-body: "Noto Serif", "Georgia", serif;
-    --font-utility: "Helvetica Neue", "Arial", sans-serif;
+    --font-display: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+    --font-body: "Noto Serif SC", "Songti SC", serif;
+    --font-utility: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
     --font-roman: "EB Garamond", "Times New Roman", Georgia, serif;
   }
 
@@ -166,7 +166,7 @@
   .stat-row{ display:flex; align-items:center; gap:10px; }
   .stat-label{
     font-family: var(--font-utility); font-size: 11.5px;
-    letter-spacing: .1em; width: 70px; flex-shrink:0;
+    letter-spacing: .1em; width: 56px; flex-shrink:0;
   }
   .stat-label.freedom{ color: var(--moss); }
   .stat-label.wisdom{ color: var(--slate); }
@@ -242,7 +242,6 @@
   .audio-control svg{ width:18px; height:18px; fill: var(--parchment); }
   .audio-control.muted{ opacity:0.5; }
 
-  /* Language Switch */
   .lang-switch{
     position:fixed; top:20px; left:20px; z-index:100;
     display:flex; gap:0;
@@ -302,14 +301,12 @@
   <div class="character-name" id="charName"></div>
 </div>
 
-<!-- Language Switch -->
 <div class="lang-switch">
   <a href="../">中文</a>
   <div class="divider"></div>
   <a href="./" class="active">EN</a>
 </div>
 
-<!-- Audio Control -->
 <div class="audio-control" id="audioControl" onclick="toggleAudio()">
   <svg id="audioIcon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
 </div>
@@ -325,7 +322,6 @@
 (function(){
   "use strict";
 
-  // ===================== Audio System =====================
   var audioCtx = null;
   var audioEnabled = true;
   var bgmOscillator = null;
@@ -414,7 +410,6 @@
     }
   };
 
-  // ===================== Scene System =====================
   var sceneImages = {
     cover: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1920&q=80',
     ch1: 'https://images.unsplash.com/photo-1511497584788-876760111969?w=1920&q=80',
@@ -488,7 +483,6 @@
     }
   }
 
-  // ===================== Character Portrait =====================
   function showCharacter(imgUrl, name, position){
     var portrait = document.getElementById('charPortrait');
     var img = document.getElementById('charImg');
@@ -500,7 +494,6 @@
     setTimeout(function(){ portrait.classList.add('active'); }, 100);
   }
 
-  // ===================== Game State =====================
   var stats = { freedom: 0, wisdom: 0, bond: 0 };
 
   function leafIconColored(filled, cls, pulse){
@@ -528,18 +521,17 @@
     return '<span class="choice-twig"><svg viewBox="0 0 24 24"><path d="M12 2C7 6 3 11 3 15.5C3 20 7 23 12 23C17 23 21 20 21 15.5C21 11 17 6 12 2Z"/></svg></span>';
   }
 
-  // ===================== Story Data =====================
   var S = {};
 
   S.cover = {
     render: function(){
       return '<div class="page cover">' +
-        '<div class="kicker">AN INTERACTIVE FABLE</div>' +
-        '<h1>The Man Who Never Landed</h1>' +
+        '<div class="kicker">文字互动寓言</div>' +
+        '<h1>不落地的人</h1>' +
         '<div class="cover-divider"></div>' +
-        '<p class="lede">At the age of eleven, you climbed the old tree in the courtyard and made a vow: never again would your feet touch the ground. No one knew what that decision would make of your life.</p>' +
-        '<button class="btn-start" id="startBtn">Climb Up</button>' +
-        '<div class="credit">Inspired by Italo Calvino's "The Baron in the Trees" — Characters and plot are original adaptations</div>' +
+        '<p class="lede">十一岁那年，你爬上庭院里的那棵老树，立下一个誓言：这一生，脚再也不踏上地面。没有人知道，这个决定会把你的一生，变成什么样子。</p>' +
+        '<button class="btn-start" id="startBtn">爬上去</button>' +
+        '<div class="credit">灵感源自伊塔洛·卡尔维诺《树上的男爵》 —— 人物与情节均为原创改编</div>' +
         '</div>';
     },
     bind: function(){
@@ -615,7 +607,7 @@
     return {
       render: function(){
         var body = '<div class="story">' + paras.map(function(p){ return '<p>'+p+'</p>'; }).join('') + '</div>';
-        var summary = '<div class="ending-stats">Freedom '+stats.freedom+' · Wisdom '+stats.wisdom+' · Bond '+stats.bond+'</div>';
+        var summary = '<div class="ending-stats">自由 '+stats.freedom+' · 智慧 '+stats.wisdom+' · 联结 '+stats.bond+'</div>';
         return '<div class="page">' +
           '<div class="ending-tag">ENDING · '+eyebrowTag+'</div>' +
           '<h1 class="title">'+title+'</h1>' +
@@ -633,8 +625,6 @@
     };
   }
 
-  // ===================== Chapter Definitions =====================
-
   S.ch1_intro = textScene({
     chapter:'BOOK ONE', roman:'I', title:'The Vow',
     paras:['That summer, at eleven years old, the air of Haiting was thick with the scent of pickled olives and salt from returning ships. Your father, the most respectable freight merchant in town, pushed a plate of steamed snails toward you for the third time at dinner — this was what he deemed "the right food," and part of what he deemed "the right life."','You pushed the plate back. The chair fell loudly. You ran out the door and climbed the century-old coral tree in the courtyard. You did not know then that this climb would last a lifetime.'],
@@ -647,9 +637,9 @@
     paras:['Night crept in slowly. You sat on the first sturdy branch and asked yourself, for the first time with real seriousness: In that moment just now, what was it you truly wanted?'],
     options:[
       { label:'The bark is rough, but the wind is free', stat:'freedom', delta:2,
-        reaction:'You leaned against the trunk and, for the first time, felt that looking down made you more dizzy than looking up — dizzy from the weight of rules.', next:'ch1_bridge' },
+        reaction:'You leaned against the trunk and, for the first time, felt that looking down made you more dizzy than looking up — dizzy from the weight of rules.', next:'ch1_bridge' }
       { label:'You want to know what the world looks like where no one can reach you', stat:'wisdom', delta:2,
-        reaction:'You counted the veins of the leaves like counting the table of contents of a book not yet written.', next:'ch1_bridge' },
+        reaction:'You counted the veins of the leaves like counting the table of contents of a book not yet written.', next:'ch1_bridge' }
       { label:'You want to see who would look up because you are gone', stat:'bond', delta:2,
         reaction:'You heard your mother calling your name from below, with a kind of earnestness you had never heard before.', next:'ch1_bridge' }
     ],
@@ -781,7 +771,6 @@
     scene: { key: 'ch4', options: { particles: 'embers', fire: true } }
   });
 
-  // ===================== Endings =====================
   S.ending_freedom = endingScene('freedom','Into Evergreen','A Tree That Moves',[
     'You did not reach for any rooftop. Instead, you turned nineteen years of balance and canopy memory into an escape map only you could read — directing the townspeople from above the smoke, sending buckets along your pulleys into the fire, never once stepping onto the ground.',
     'The morning the fire was contained, the townspeople did not ask "when will you come down" for the first time. Instead, they began writing you into textbooks as someone who had truly lived.',
@@ -813,7 +802,6 @@
     return 'ending_' + best;
   }
 
-  // ===================== Engine =====================
   function goto(id){
     if(id === '__compute_ending__'){ id = computeEnding(); }
     var scene = S[id];
@@ -827,7 +815,7 @@
     else { showCharacter(null); }
 
     try { root.innerHTML = scene.render(); }
-    catch(e) { console.error('Render error:', e); root.innerHTML = '<div class="page"><p>Loading error. Please refresh the page.</p></div>'; return; }
+    catch(e) { console.error('Render error:', e); root.innerHTML = '<div class="page"><p>加载出错，请刷新页面重试。</p></div>'; return; }
 
     if(scene.bind){
       try { scene.bind(); }
@@ -836,7 +824,6 @@
     window.scrollTo({top:0, behavior:'instant'});
   }
 
-  // ===================== Init =====================
   function init(){
     try {
       setScene('cover', { particles: 'leaves', mist: true });
@@ -847,7 +834,7 @@
       }, 1500);
     } catch(e) {
       console.error('Init error:', e);
-      document.getElementById('sceneRoot').innerHTML = '<div class="page"><p>Initialization failed. Please refresh.</p></div>';
+      document.getElementById('sceneRoot').innerHTML = '<div class="page"><p>初始化失败，请刷新页面。</p></div>';
     }
   }
 
