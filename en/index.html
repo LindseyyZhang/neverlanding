@@ -16,9 +16,9 @@
     --slate: #51707a;
     --ochre: #C97A3D;
     --ink-text: #2B2018;
-    --font-display: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
-    --font-body: "Noto Serif SC", "Songti SC", serif;
-    --font-utility: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --font-display: "Noto Serif", "Georgia", "Times New Roman", serif;
+    --font-body: "Noto Serif", "Georgia", serif;
+    --font-utility: "Helvetica Neue", "Arial", sans-serif;
     --font-roman: "EB Garamond", "Times New Roman", Georgia, serif;
   }
 
@@ -166,7 +166,7 @@
   .stat-row{ display:flex; align-items:center; gap:10px; }
   .stat-label{
     font-family: var(--font-utility); font-size: 11.5px;
-    letter-spacing: .1em; width: 56px; flex-shrink:0;
+    letter-spacing: .1em; width: 70px; flex-shrink:0;
   }
   .stat-label.freedom{ color: var(--moss); }
   .stat-label.wisdom{ color: var(--slate); }
@@ -302,7 +302,7 @@
 </div>
 
 <div class="lang-switch">
-  <a href="../">中文</a>
+  <a href="../">CN</a>
   <div class="divider"></div>
   <a href="./" class="active">EN</a>
 </div>
@@ -339,7 +339,7 @@
     try {
       var osc = audioCtx.createOscillator();
       var gain = audioCtx.createGain();
-      osc.type = type || 'sine';
+      osc.type = type || "sine";
       osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
       gain.gain.setValueAtTime(volume || 0.1, audioCtx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
@@ -356,7 +356,7 @@
     try {
       bgmOscillator = audioCtx.createOscillator();
       bgmGain = audioCtx.createGain();
-      bgmOscillator.type = 'sine';
+      bgmOscillator.type = "sine";
       bgmOscillator.frequency.setValueAtTime(110, audioCtx.currentTime);
       bgmGain.gain.setValueAtTime(0.03, audioCtx.currentTime);
       bgmOscillator.connect(bgmGain);
@@ -370,12 +370,12 @@
   }
 
   function playChoiceSound(){
-    playTone(440, 0.15, 'sine', 0.08);
-    setTimeout(function(){ playTone(554, 0.15, 'sine', 0.06); }, 80);
+    playTone(440, 0.15, "sine", 0.08);
+    setTimeout(function(){ playTone(554, 0.15, "sine", 0.06); }, 80);
   }
 
   function playPageTurnSound(){
-    playTone(330, 0.3, 'triangle', 0.05);
+    playTone(330, 0.3, "triangle", 0.05);
   }
 
   function playFireSound(){
@@ -388,7 +388,7 @@
       var noise = audioCtx.createBufferSource();
       noise.buffer = buffer;
       var filter = audioCtx.createBiquadFilter();
-      filter.type = 'lowpass'; filter.frequency.value = 400;
+      filter.type = "lowpass"; filter.frequency.value = 400;
       var gain = audioCtx.createGain(); gain.gain.value = 0.08;
       noise.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
       noise.start(); noise.stop(audioCtx.currentTime + 3);
@@ -397,112 +397,112 @@
 
   window.toggleAudio = function(){
     audioEnabled = !audioEnabled;
-    var btn = document.getElementById('audioControl');
-    var icon = document.getElementById('audioIcon');
+    var btn = document.getElementById("audioControl");
+    var icon = document.getElementById("audioIcon");
     if(audioEnabled){
-      btn.classList.remove('muted');
+      btn.classList.remove("muted");
       icon.innerHTML = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
       initAudio(); playAmbientBgm();
     } else {
-      btn.classList.add('muted');
+      btn.classList.add("muted");
       icon.innerHTML = '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 1L9.91 3.09 12 5.18V1z"/>';
       stopAmbientBgm();
     }
   };
 
   var sceneImages = {
-    cover: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1920&q=80',
-    ch1: 'https://images.unsplash.com/photo-1511497584788-876760111969?w=1920&q=80',
-    ch2: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=1920&q=80',
-    ch3: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&q=80',
-    ch4: 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=1920&q=80',
-    fire: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&q=80',
-    ending: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920&q=80'
+    cover: "https://images.unsplash.com/photo-1448375240586-882707db888b?w=1920&q=80",
+    ch1: "https://images.unsplash.com/photo-1511497584788-876760111969?w=1920&q=80",
+    ch2: "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=1920&q=80",
+    ch3: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&q=80",
+    ch4: "https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=1920&q=80",
+    fire: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&q=80",
+    ending: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920&q=80"
   };
 
   function setScene(sceneKey, options){
     options = options || {};
-    var bg = document.getElementById('sceneBg');
-    var fire = document.getElementById('fireGlow');
-    var mist = document.getElementById('mistLayer');
-    var particles = document.getElementById('particleLayer');
+    var bg = document.getElementById("sceneBg");
+    var fire = document.getElementById("fireGlow");
+    var mist = document.getElementById("mistLayer");
+    var particles = document.getElementById("particleLayer");
     var imgUrl = sceneImages[sceneKey] || sceneImages.cover;
 
     var img = new Image();
-    img.onload = function(){ bg.style.backgroundImage = 'url(' + imgUrl + ')'; bg.classList.add('active'); };
-    img.onerror = function(){ bg.style.background = 'linear-gradient(180deg, #2B3A2C 0%, #1B2620 100%)'; bg.classList.add('active'); };
+    img.onload = function(){ bg.style.backgroundImage = "url(" + imgUrl + ")"; bg.classList.add("active"); };
+    img.onerror = function(){ bg.style.background = "linear-gradient(180deg, #2B3A2C 0%, #1B2620 100%)"; bg.classList.add("active"); };
     img.src = imgUrl;
 
-    if(options.fire){ fire.classList.add('active'); playFireSound(); }
-    else { fire.classList.remove('active'); }
+    if(options.fire){ fire.classList.add("active"); playFireSound(); }
+    else { fire.classList.remove("active"); }
 
-    mist.style.opacity = options.mist !== false ? '1' : '0';
+    mist.style.opacity = options.mist !== false ? "1" : "0";
 
-    particles.innerHTML = '';
-    if(options.particles === 'leaves') createLeaves();
-    else if(options.particles === 'embers') createEmbers();
-    else if(options.particles === 'snow') createSnow();
+    particles.innerHTML = "";
+    if(options.particles === "leaves") createLeaves();
+    else if(options.particles === "embers") createEmbers();
+    else if(options.particles === "snow") createSnow();
   }
 
   function createLeaves(){
-    var container = document.getElementById('particleLayer');
+    var container = document.getElementById("particleLayer");
     for(var i = 0; i < 15; i++){
-      var leaf = document.createElement('div');
-      leaf.className = 'particle';
-      leaf.style.left = Math.random() * 100 + '%';
-      leaf.style.animationDuration = (8 + Math.random() * 12) + 's';
-      leaf.style.animationDelay = Math.random() * 10 + 's';
+      var leaf = document.createElement("div");
+      leaf.className = "particle";
+      leaf.style.left = Math.random() * 100 + "%";
+      leaf.style.animationDuration = (8 + Math.random() * 12) + "s";
+      leaf.style.animationDelay = Math.random() * 10 + "s";
       leaf.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24"><path d="M12 2C7 6 3 11 3 15.5C3 20 7 23 12 23C17 23 21 20 21 15.5C21 11 17 6 12 2Z" fill="rgba(126,154,99,' + (0.3 + Math.random() * 0.4) + ')"/></svg>';
       container.appendChild(leaf);
     }
   }
 
   function createEmbers(){
-    var container = document.getElementById('particleLayer');
+    var container = document.getElementById("particleLayer");
     for(var i = 0; i < 20; i++){
-      var ember = document.createElement('div');
-      ember.className = 'particle';
-      ember.style.left = Math.random() * 100 + '%';
-      ember.style.animationDuration = (3 + Math.random() * 5) + 's';
-      ember.style.animationDelay = Math.random() * 5 + 's';
+      var ember = document.createElement("div");
+      ember.className = "particle";
+      ember.style.left = Math.random() * 100 + "%";
+      ember.style.animationDuration = (3 + Math.random() * 5) + "s";
+      ember.style.animationDelay = Math.random() * 5 + "s";
       ember.innerHTML = '<div style="width:4px;height:4px;border-radius:50%;background:rgba(201,122,61,' + (0.4 + Math.random() * 0.6) + ');box-shadow:0 0 6px rgba(201,122,61,0.5);"></div>';
       container.appendChild(ember);
     }
   }
 
   function createSnow(){
-    var container = document.getElementById('particleLayer');
+    var container = document.getElementById("particleLayer");
     for(var i = 0; i < 25; i++){
-      var snow = document.createElement('div');
-      snow.className = 'particle';
-      snow.style.left = Math.random() * 100 + '%';
-      snow.style.animationDuration = (6 + Math.random() * 10) + 's';
-      snow.style.animationDelay = Math.random() * 8 + 's';
+      var snow = document.createElement("div");
+      snow.className = "particle";
+      snow.style.left = Math.random() * 100 + "%";
+      snow.style.animationDuration = (6 + Math.random() * 10) + "s";
+      snow.style.animationDelay = Math.random() * 8 + "s";
       snow.innerHTML = '<div style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,' + (0.3 + Math.random() * 0.5) + ');"></div>';
       container.appendChild(snow);
     }
   }
 
   function showCharacter(imgUrl, name, position){
-    var portrait = document.getElementById('charPortrait');
-    var img = document.getElementById('charImg');
-    var nameEl = document.getElementById('charName');
-    portrait.classList.remove('active', 'left', 'right');
-    if(!imgUrl){ setTimeout(function(){ portrait.classList.remove('active'); }, 300); return; }
-    img.src = imgUrl; img.alt = name || ''; nameEl.textContent = name || '';
-    portrait.classList.add(position || 'right');
-    setTimeout(function(){ portrait.classList.add('active'); }, 100);
+    var portrait = document.getElementById("charPortrait");
+    var img = document.getElementById("charImg");
+    var nameEl = document.getElementById("charName");
+    portrait.classList.remove("active", "left", "right");
+    if(!imgUrl){ setTimeout(function(){ portrait.classList.remove("active"); }, 300); return; }
+    img.src = imgUrl; img.alt = name || ""; nameEl.textContent = name || "";
+    portrait.classList.add(position || "right");
+    setTimeout(function(){ portrait.classList.add("active"); }, 100);
   }
 
   var stats = { freedom: 0, wisdom: 0, bond: 0 };
 
   function leafIconColored(filled, cls, pulse){
-    var color = filled ? 'var(--'+(cls==='freedom'?'moss':cls==='wisdom'?'slate':'ochre')+')' : 'rgba(43,32,24,.14)';
+    var color = filled ? (cls==="freedom"?"#7E9A63":cls==="wisdom"?"#51707a":"#C97A3D") : "rgba(43,32,24,.14)";
     return '<svg class="leaf-icon'+(pulse?' pulse':'')+'" viewBox="0 0 24 24"><path d="M12 2C7 6 3 11 3 15.5C3 20 7 23 12 23C17 23 21 20 21 15.5C21 11 17 6 12 2Z" fill="'+color+'"/></svg>';
   }
 
   function statRow(label, cls, value, changedKey){
-    var leaves = '', filledCount = Math.min(6, Math.round(value/2));
+    var leaves = "", filledCount = Math.min(6, Math.round(value/2));
     for(var i=0;i<6;i++){
       leaves += leafIconColored(i < filledCount, cls, changedKey===cls && i === filledCount-1);
     }
@@ -511,9 +511,9 @@
 
   function renderStats(changedKey){
     return '<div class="stats">' +
-      statRow('Freedom','freedom', stats.freedom, changedKey) +
-      statRow('Wisdom','wisdom', stats.wisdom, changedKey) +
-      statRow('Bond','bond', stats.bond, changedKey) +
+      statRow("Freedom","freedom", stats.freedom, changedKey) +
+      statRow("Wisdom","wisdom", stats.wisdom, changedKey) +
+      statRow("Bond","bond", stats.bond, changedKey) +
       '</div>';
   }
 
@@ -526,20 +526,20 @@
   S.cover = {
     render: function(){
       return '<div class="page cover">' +
-        '<div class="kicker">文字互动寓言</div>' +
-        '<h1>不落地的人</h1>' +
+        '<div class="kicker">AN INTERACTIVE FABLE</div>' +
+        '<h1>The Man Who Never Landed</h1>' +
         '<div class="cover-divider"></div>' +
-        '<p class="lede">十一岁那年，你爬上庭院里的那棵老树，立下一个誓言：这一生，脚再也不踏上地面。没有人知道，这个决定会把你的一生，变成什么样子。</p>' +
-        '<button class="btn-start" id="startBtn">爬上去</button>' +
-        '<div class="credit">灵感源自伊塔洛·卡尔维诺《树上的男爵》 —— 人物与情节均为原创改编</div>' +
+        '<p class="lede">At the age of eleven, you climbed the old tree in the courtyard and made a vow: never again would your feet touch the ground. No one knew what that decision would make of your life.</p>' +
+        '<button class="btn-start" id="startBtn">Climb Up</button>' +
+        '<div class="credit">Inspired by Italo Calvino\'s "The Baron in the Trees" — Characters and plot are original adaptations</div>' +
         '</div>';
     },
     bind: function(){
-      document.getElementById('startBtn').onclick = function(){ 
-        initAudio(); playAmbientBgm(); playPageTurnSound(); goto('ch1_intro'); 
+      document.getElementById("startBtn").onclick = function(){ 
+        initAudio(); playAmbientBgm(); playPageTurnSound(); goto("ch1_intro"); 
       };
     },
-    scene: { key: 'cover', options: { particles: 'leaves', mist: true } },
+    scene: { key: "cover", options: { particles: "leaves", mist: true } },
     character: null
   };
 
@@ -554,9 +554,9 @@
           '<div class="continue-row"><button class="btn-continue" id="contBtn">Continue</button></div></div>';
       },
       bind: function(){
-        document.getElementById('contBtn').onclick = function(){ playPageTurnSound(); goto(opts.next); };
+        document.getElementById("contBtn").onclick = function(){ playPageTurnSound(); goto(opts.next); };
       },
-      scene: opts.scene || { key: 'ch1', options: { particles: 'leaves' } },
+      scene: opts.scene || { key: "ch1", options: { particles: "leaves" } },
       character: opts.character || null
     };
   }
@@ -579,14 +579,14 @@
         btns.forEach(function(btn){
           btn.onclick = function(){
             playChoiceSound();
-            var o = opts.options[parseInt(btn.getAttribute('data-i'),10)];
+            var o = opts.options[parseInt(btn.getAttribute("data-i"),10)];
             if(o.special){ goto(o.special); return; }
             if(o.stat){ stats[o.stat] += o.delta; }
             showReaction(opts, o);
           };
         });
       },
-      scene: opts.scene || { key: 'ch1', options: { particles: 'leaves' } },
+      scene: opts.scene || { key: "ch1", options: { particles: "leaves" } },
       character: opts.character || null
     };
   }
@@ -596,18 +596,18 @@
     var title = opts.title ? '<h1 class="title">'+opts.title+'</h1>' : '';
     var statsHtml = opts.showStats ? renderStats(o.stat) : '';
     var body = '<div class="story">' + opts.paras.map(function(p){ return '<p>'+p+'</p>'; }).join('') + '</div>';
-    var root = document.getElementById('sceneRoot');
+    var root = document.getElementById("sceneRoot");
     root.innerHTML = '<div class="page">' + eyebrow + title + statsHtml + body +
       '<p class="reaction">'+o.reaction+'</p>' +
       '<div class="continue-row"><button class="btn-continue" id="contBtn2">Continue</button></div></div>';
-    document.getElementById('contBtn2').onclick = function(){ playPageTurnSound(); goto(o.next); };
+    document.getElementById("contBtn2").onclick = function(){ playPageTurnSound(); goto(o.next); };
   }
 
   function endingScene(key, eyebrowTag, title, paras){
     return {
       render: function(){
         var body = '<div class="story">' + paras.map(function(p){ return '<p>'+p+'</p>'; }).join('') + '</div>';
-        var summary = '<div class="ending-stats">自由 '+stats.freedom+' · 智慧 '+stats.wisdom+' · 联结 '+stats.bond+'</div>';
+        var summary = '<div class="ending-stats">Freedom '+stats.freedom+' · Wisdom '+stats.wisdom+' · Bond '+stats.bond+'</div>';
         return '<div class="page">' +
           '<div class="ending-tag">ENDING · '+eyebrowTag+'</div>' +
           '<h1 class="title">'+title+'</h1>' +
@@ -615,234 +615,246 @@
           '<div class="continue-row"><button class="btn-restart" id="restartBtn">Climb Again</button></div></div>';
       },
       bind: function(){
-        document.getElementById('restartBtn').onclick = function(){
+        document.getElementById("restartBtn").onclick = function(){
           stats = { freedom:0, wisdom:0, bond:0 };
-          playPageTurnSound(); goto('cover');
+          playPageTurnSound(); goto("cover");
         };
       },
-      scene: { key: 'ending', options: { particles: 'leaves', mist: true } },
+      scene: { key: "ending", options: { particles: "leaves", mist: true } },
       character: null
     };
   }
 
   S.ch1_intro = textScene({
-    chapter:'BOOK ONE', roman:'I', title:'The Vow',
-    paras:['That summer, at eleven years old, the air of Haiting was thick with the scent of pickled olives and salt from returning ships. Your father, the most respectable freight merchant in town, pushed a plate of steamed snails toward you for the third time at dinner — this was what he deemed "the right food," and part of what he deemed "the right life."','You pushed the plate back. The chair fell loudly. You ran out the door and climbed the century-old coral tree in the courtyard. You did not know then that this climb would last a lifetime.'],
-    next:'ch1_choiceA',
-    scene: { key: 'ch1', options: { particles: 'leaves', mist: true } }
+    chapter:"BOOK ONE", roman:"I", title:"The Vow",
+    paras:[
+      "That summer, at eleven years old, the air of Haiting was thick with the scent of pickled olives and salt from returning ships. Your father, the most respectable freight merchant in town, pushed a plate of steamed snails toward you for the third time at dinner — this was what he deemed \"the right food,\" and part of what he deemed \"the right life.\"",
+      "You pushed the plate back. The chair fell loudly. You ran out the door and climbed the century-old coral tree in the courtyard. You did not know then that this climb would last a lifetime."
+    ],
+    next:"ch1_choiceA",
+    scene: { key: "ch1", options: { particles: "leaves", mist: true } }
   });
 
   S.ch1_choiceA = choiceScene({
-    chapter:'BOOK ONE', roman:'I', title:'The Vow',
-    paras:['Night crept in slowly. You sat on the first sturdy branch and asked yourself, for the first time with real seriousness: In that moment just now, what was it you truly wanted?'],
+    chapter:"BOOK ONE", roman:"I", title:"The Vow",
+    paras:["Night crept in slowly. You sat on the first sturdy branch and asked yourself, for the first time with real seriousness: In that moment just now, what was it you truly wanted?"],
     options:[
-      { label:'The bark is rough, but the wind is free', stat:'freedom', delta:2,
-        reaction:'You leaned against the trunk and, for the first time, felt that looking down made you more dizzy than looking up — dizzy from the weight of rules.', next:'ch1_bridge' }
-      { label:'You want to know what the world looks like where no one can reach you', stat:'wisdom', delta:2,
-        reaction:'You counted the veins of the leaves like counting the table of contents of a book not yet written.', next:'ch1_bridge' }
-      { label:'You want to see who would look up because you are gone', stat:'bond', delta:2,
-        reaction:'You heard your mother calling your name from below, with a kind of earnestness you had never heard before.', next:'ch1_bridge' }
+      { label:"The bark is rough, but the wind is free", stat:"freedom", delta:2,
+        reaction:"You leaned against the trunk and, for the first time, felt that looking down made you more dizzy than looking up — dizzy from the weight of rules.", next:"ch1_bridge" },
+      { label:"You want to know what the world looks like where no one can reach you", stat:"wisdom", delta:2,
+        reaction:"You counted the veins of the leaves like counting the table of contents of a book not yet written.", next:"ch1_bridge" },
+      { label:"You want to see who would look up because you are gone", stat:"bond", delta:2,
+        reaction:"You heard your mother calling your name from below, with a kind of earnestness you had never heard before.", next:"ch1_bridge" }
     ],
-    scene: { key: 'ch1', options: { particles: 'leaves' } }
+    scene: { key: "ch1", options: { particles: "leaves" } }
   });
 
   S.ch1_bridge = textScene({
-    chapter:'BOOK ONE', roman:'I',
-    paras:['The first night was cold. The townspeople began finding ways to confirm whether you were still "normal" — someone left a quilt beneath the tree; someone simply watched from afar and said nothing.'],
-    next:'ch1_choiceB',
-    scene: { key: 'ch1', options: { particles: 'leaves', mist: true } }
+    chapter:"BOOK ONE", roman:"I",
+    paras:["The first night was cold. The townspeople began finding ways to confirm whether you were still \"normal\" — someone left a quilt beneath the tree; someone simply watched from afar and said nothing."],
+    next:"ch1_choiceB",
+    scene: { key: "ch1", options: { particles: "leaves", mist: true } }
   });
 
   S.ch1_choiceB = choiceScene({
-    chapter:'BOOK ONE', roman:'I', title:'The Vow',
-    paras:['You must decide how to spend each night from now on.'],
+    chapter:"BOOK ONE", roman:"I", title:"The Vow",
+    paras:["You must decide how to spend each night from now on."],
     options:[
-      { label:'Hang a hammock and make the tree your room', stat:'freedom', delta:2,
-        reaction:'You made your first bed from rope and old canvas, and slept more soundly in the swaying than any night at home.', next:'ch2_intro' },
-      { label:'Ask someone to lend you a thick book to pass the long nights', stat:'wisdom', delta:2,
-        reaction:'The boy who brought the book said no one in town could figure out what you were doing, but everyone wanted to know how it ended.', next:'ch2_intro' },
-      { label:'Arrange three whistle signals with your sister to stay connected', stat:'bond', delta:2,
-        reaction:'Safe, need something, and a third one that meant "don't let Father know."', next:'ch2_intro' }
+      { label:"Hang a hammock and make the tree your room", stat:"freedom", delta:2,
+        reaction:"You made your first bed from rope and old canvas, and slept more soundly in the swaying than any night at home.", next:"ch2_intro" },
+      { label:"Ask someone to lend you a thick book to pass the long nights", stat:"wisdom", delta:2,
+        reaction:"The boy who brought the book said no one in town could figure out what you were doing, but everyone wanted to know how it ended.", next:"ch2_intro" },
+      { label:"Arrange three whistle signals with your sister to stay connected", stat:"bond", delta:2,
+        reaction:"Safe, need something, and a third one that meant \"do not let Father know.\"", next:"ch2_intro" }
     ],
-    scene: { key: 'ch1', options: { particles: 'leaves' } }
+    scene: { key: "ch1", options: { particles: "leaves" } }
   });
 
   S.ch2_intro = textScene({
-    chapter:'BOOK TWO', roman:'II', title:'The Canopy Project',
-    paras:['Days passed, and one tree became an insufficient house. You began building rope bridges between the neighboring oaks and fig trees, gradually turning the edge of town's forest into a territory only you knew how to navigate.','The townspeople slowly divided into two factions: one said you were mad; the other began tiptoeing beneath the shade to ask you for things.'],
-    next:'ch2_choiceA',
-    scene: { key: 'ch2', options: { particles: 'leaves' } }
+    chapter:"BOOK TWO", roman:"II", title:"The Canopy Project",
+    paras:[
+      "Days passed, and one tree became an insufficient house. You began building rope bridges between the neighboring oaks and fig trees, gradually turning the edge of town's forest into a territory only you knew how to navigate.",
+      "The townspeople slowly divided into two factions: one said you were mad; the other began tiptoeing beneath the shade to ask you for things."
+    ],
+    next:"ch2_choiceA",
+    scene: { key: "ch2", options: { particles: "leaves" } }
   });
 
   S.ch2_choiceA = choiceScene({
-    chapter:'BOOK TWO', roman:'II', title:'The Canopy Project',
-    paras:['How do you plan to build these bridges?'],
+    chapter:"BOOK TWO", roman:"II", title:"The Canopy Project",
+    paras:["How do you plan to build these bridges?"],
     options:[
-      { label:'Build them fast and numerous, covering the whole forest', stat:'freedom', delta:2,
-        reaction:'Your territory expanded day by day. No one could say anymore how many paths wound through the forest at the edge of town.', next:'ch2_bridge' },
-      { label:'Draw and calculate the weight of each section — never redo', stat:'wisdom', delta:2,
-        reaction:'You began carrying a notebook, recording which knots best withstood the wind of the rainy season.', next:'ch2_bridge' },
-      { label:'Build only between the trees where you can see the town's chimneys smoking', stat:'bond', delta:2,
-        reaction:'Every dusk, you counted the distant lights, checking whose house had not yet lit a fire.', next:'ch2_bridge' }
+      { label:"Build them fast and numerous, covering the whole forest", stat:"freedom", delta:2,
+        reaction:"Your territory expanded day by day. No one could say anymore how many paths wound through the forest at the edge of town.", next:"ch2_bridge" },
+      { label:"Draw and calculate the weight of each section — never redo", stat:"wisdom", delta:2,
+        reaction:"You began carrying a notebook, recording which knots best withstood the wind of the rainy season.", next:"ch2_bridge" },
+      { label:"Build only between the trees where you can see the town's chimneys smoking", stat:"bond", delta:2,
+        reaction:"Every dusk, you counted the distant lights, checking whose house had not yet lit a fire.", next:"ch2_bridge" }
     ],
-    scene: { key: 'ch2', options: { particles: 'leaves' } }
+    scene: { key: "ch2", options: { particles: "leaves" } }
   });
 
   S.ch2_bridge = textScene({
-    chapter:'BOOK TWO', roman:'II',
-    paras:['One rainy morning, the blacksmith looked up at you, slipped on his ladder, and fell onto the stone steps in front of his own door.'],
-    next:'ch2_choiceB',
-    scene: { key: 'ch2', options: { particles: 'snow', mist: true } }
+    chapter:"BOOK TWO", roman:"II",
+    paras:["One rainy morning, the blacksmith looked up at you, slipped on his ladder, and fell onto the stone steps in front of his own door."],
+    next:"ch2_choiceB",
+    scene: { key: "ch2", options: { particles: "snow", mist: true } }
   });
 
   S.ch2_choiceB = choiceScene({
-    chapter:'BOOK TWO', roman:'II', title:'The Canopy Project',
-    paras:['He shouted from below — whether cursing you or calling you, you could not tell.'],
+    chapter:"BOOK TWO", roman:"II", title:"The Canopy Project",
+    paras:["He shouted from below — whether cursing you or calling you, you could not tell."],
     options:[
-      { label:'Drop a line: "Ladders are for those who live on the ground," and keep working', stat:'freedom', delta:2,
-        reaction:'The blacksmith never spoke to you again, but he never called you mad either — he said you were evidence of another way to live.', next:'ch3_intro' },
-      { label:'Spend the night designing a pulley system to send messages without descending', stat:'wisdom', delta:2,
-        reaction:'Three days later, four households in town quietly installed the same hook beneath their own eaves.', next:'ch3_intro' },
-      { label:'Slide halfway down the rope and reach out a hand', stat:'bond', delta:2,
-        reaction:'Your toes never touched the ground, but it was the closest you had ever come to "landing" for another person.', next:'ch3_intro' }
+      { label:"Drop a line: \"Ladders are for those who live on the ground,\" and keep working", stat:"freedom", delta:2,
+        reaction:"The blacksmith never spoke to you again, but he never called you mad either — he said you were evidence of another way to live.", next:"ch3_intro" },
+      { label:"Spend the night designing a pulley system to send messages without descending", stat:"wisdom", delta:2,
+        reaction:"Three days later, four households in town quietly installed the same hook beneath their own eaves.", next:"ch3_intro" },
+      { label:"Slide halfway down the rope and reach out a hand", stat:"bond", delta:2,
+        reaction:"Your toes never touched the ground, but it was the closest you had ever come to \"landing\" for another person.", next:"ch3_intro" }
     ],
-    scene: { key: 'ch2', options: { particles: 'snow' } }
+    scene: { key: "ch2", options: { particles: "snow" } }
   });
 
   S.ch3_intro = textScene({
-    chapter:'BOOK THREE', roman:'III', title:'Thought and Love',
-    paras:['In the third year, an old man with a specimen box appeared at the edge of the forest, calling himself "one who watches trees." He was Elder Hua, who had once dreamed of never landing, but had not survived the first winter. He began bringing you books each week — from him, you first learned that there were people in the world who had spent centuries arguing about "how one should live."','That same year, the librarian's daughter, Poria, began climbing the wall to bring you pages she had copied by hand, for her father would not lend her "dangerous books."'],
-    next:'ch3_choiceA',
-    scene: { key: 'ch3', options: { particles: 'leaves' } },
-    character: { url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80', name: 'Elder Hua', position: 'left' }
+    chapter:"BOOK THREE", roman:"III", title:"Thought and Love",
+    paras:[
+      "In the third year, an old man with a specimen box appeared at the edge of the forest, calling himself \"one who watches trees.\" He was Elder Hua, who had once dreamed of never landing, but had not survived the first winter. He began bringing you books each week — from him, you first learned that there were people in the world who had spent centuries arguing about \"how one should live.\"",
+      "That same year, the librarian's daughter, Poria, began climbing the wall to bring you pages she had copied by hand, for her father would not lend her \"dangerous books.\""
+    ],
+    next:"ch3_choiceA",
+    scene: { key: "ch3", options: { particles: "leaves" } },
+    character: { url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80", name: "Elder Hua", position: "left" }
   });
 
   S.ch3_choiceA = choiceScene({
-    chapter:'BOOK THREE', roman:'III', title:'Thought and Love',
-    paras:['Facing these questions that Elder Hua brought — questions that had been argued for centuries — which one truly matters to you?'],
+    chapter:"BOOK THREE", roman:"III", title:"Thought and Love",
+    paras:["Facing these questions that Elder Hua brought — questions that had been argued for centuries — which one truly matters to you?"],
     options:[
-      { label:'How to live longer and more steadily in the trees', stat:'freedom', delta:2,
-        reaction:'You told Elder Hua that theory could wait — first, fix the roof before the next rainy season.', next:'ch3_choiceB' },
-      { label:'Turn the canopy into a desk overlooking the era, and begin writing letters', stat:'wisdom', delta:2,
-        reaction:'Your first letter went to a scholar you had never met, living in a distant city.', next:'ch3_choiceB' },
-      { label:'Care more about Poria's stories than Elder Hua's theories', stat:'bond', delta:2,
-        reaction:'You began anticipating the sound of footsteps over the wall more than the lamp that burned late in the tent.', next:'ch3_choiceB' }
+      { label:"How to live longer and more steadily in the trees", stat:"freedom", delta:2,
+        reaction:"You told Elder Hua that theory could wait — first, fix the roof before the next rainy season.", next:"ch3_choiceB" },
+      { label:"Turn the canopy into a desk overlooking the era, and begin writing letters", stat:"wisdom", delta:2,
+        reaction:"Your first letter went to a scholar you had never met, living in a distant city.", next:"ch3_choiceB" },
+      { label:"Care more about Poria's stories than Elder Hua's theories", stat:"bond", delta:2,
+        reaction:"You began anticipating the sound of footsteps over the wall more than the lamp that burned late in the tent.", next:"ch3_choiceB" }
     ],
-    scene: { key: 'ch3', options: { particles: 'leaves' } },
-    character: { url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80', name: 'Elder Hua', position: 'left' }
+    scene: { key: "ch3", options: { particles: "leaves" } },
+    character: { url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80", name: "Elder Hua", position: "left" }
   });
 
   S.ch3_choiceB = choiceScene({
-    chapter:'BOOK THREE', roman:'III', title:'Thought and Love',
-    paras:['What do you intend to do about this thing between you and Poria?'],
+    chapter:"BOOK THREE", roman:"III", title:"Thought and Love",
+    paras:["What do you intend to do about this thing between you and Poria?"],
     options:[
-      { label:'Keep your distance — afraid of owing a debt that might require you to descend for someone', stat:'freedom', delta:2,
-        reaction:'You quietly recorded every flutter of your heart as a reason to be more careful.', next:'ch4_intro' },
-      { label:'Carve the bark with endless debates about what freedom truly means', stat:'wisdom', delta:2,
-        reaction:'The bark of that tree gradually filled with two people's handwriting, like a contract no one could read.', next:'ch4_intro' },
-      { label:'Build her the most stable bridge in the forest, leading only to her rooftop', stat:'bond', delta:2,
-        reaction:'She said it was the most clumsy and most earnest "I love you" she had ever seen.', next:'ch4_intro' }
+      { label:"Keep your distance — afraid of owing a debt that might require you to descend for someone", stat:"freedom", delta:2,
+        reaction:"You quietly recorded every flutter of your heart as a reason to be more careful.", next:"ch4_intro" },
+      { label:"Carve the bark with endless debates about what freedom truly means", stat:"wisdom", delta:2,
+        reaction:"The bark of that tree gradually filled with two people's handwriting, like a contract no one could read.", next:"ch4_intro" },
+      { label:"Build her the most stable bridge in the forest, leading only to her rooftop", stat:"bond", delta:2,
+        reaction:"She said it was the most clumsy and most earnest \"I love you\" she had ever seen.", next:"ch4_intro" }
     ],
-    scene: { key: 'ch3', options: { particles: 'leaves', mist: true } },
-    character: { url: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80', name: 'Poria', position: 'right' }
+    scene: { key: "ch3", options: { particles: "leaves", mist: true } },
+    character: { url: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80", name: "Poria", position: "right" }
   });
 
   S.ch4_intro = textScene({
-    chapter:'BOOK FOUR', roman:'IV', title:'The Storm',
-    paras:['That winter, at thirty, a rare fire broke out at the edge of the forest — no one knew if it was lightning or someone's charcoal stove. The town's wells were insufficient; your father's freight warehouse was the first to catch fire. Poria's father rushed in to save the ledgers and was trapped by smoke in the attic.','Everyone in the forest was calling your name. For the first time in nineteen years, someone truly needed you to answer: Would you be willing, for anyone at all, to set your feet back on the ground?'],
-    next:'ch4_choice',
-    scene: { key: 'ch4', options: { particles: 'embers', fire: true, mist: false } }
+    chapter:"BOOK FOUR", roman:"IV", title:"The Storm",
+    paras:[
+      "That winter, at thirty, a rare fire broke out at the edge of the forest — no one knew if it was lightning or someone's charcoal stove. The town's wells were insufficient; your father's freight warehouse was the first to catch fire. Poria's father rushed in to save the ledgers and was trapped by smoke in the attic.",
+      "Everyone in the forest was calling your name. For the first time in nineteen years, someone truly needed you to answer: Would you be willing, for anyone at all, to set your feet back on the ground?"
+    ],
+    next:"ch4_choice",
+    scene: { key: "ch4", options: { particles: "embers", fire: true, mist: false } }
   });
 
   S.ch4_choice = choiceScene({
-    chapter:'BOOK FOUR', roman:'IV', title:'The Storm',
-    paras:['The firelight illuminated the ground beneath your feet — land untouched for nineteen years.'],
+    chapter:"BOOK FOUR", roman:"IV", title:"The Storm",
+    paras:["The firelight illuminated the ground beneath your feet — land untouched for nineteen years."],
     options:[
-      { label:'Set foot on the ground and rush into the fire', special:'ending_ground' },
-      { label:'Feet hovering in midair — but you do not jump. You begin to think of another way', next:'ch4_climb' }
+      { label:"Set foot on the ground and rush into the fire", special:"ending_ground" },
+      { label:"Feet hovering in midair — but you do not jump. You begin to think of another way", next:"ch4_climb" }
     ],
-    scene: { key: 'ch4', options: { particles: 'embers', fire: true, mist: false } }
+    scene: { key: "ch4", options: { particles: "embers", fire: true, mist: false } }
   });
 
   S.ch4_climb = textScene({
-    chapter:'BOOK FOUR', roman:'IV',
-    paras:['Everything you had learned in nineteen years flooded in at once — knots, mechanics, and the person who had been waiting for your answer. You knew the answer had been written slowly, all along.'],
-    next:'__compute_ending__',
-    scene: { key: 'ch4', options: { particles: 'embers', fire: true } }
+    chapter:"BOOK FOUR", roman:"IV",
+    paras:["Everything you had learned in nineteen years flooded in at once — knots, mechanics, and the person who had been waiting for your answer. You knew the answer had been written slowly, all along."],
+    next:"__compute_ending__",
+    scene: { key: "ch4", options: { particles: "embers", fire: true } }
   });
 
-  S.ending_freedom = endingScene('freedom','Into Evergreen','A Tree That Moves',[
-    'You did not reach for any rooftop. Instead, you turned nineteen years of balance and canopy memory into an escape map only you could read — directing the townspeople from above the smoke, sending buckets along your pulleys into the fire, never once stepping onto the ground.',
-    'The morning the fire was contained, the townspeople did not ask "when will you come down" for the first time. Instead, they began writing you into textbooks as someone who had truly lived.',
-    'Many years later, one autumn, you followed a newly built rope bridge deep into the forest and walked farther and farther — no one ever saw you return. People say you finally became a tree that moves.'
+  S.ending_freedom = endingScene("freedom","Into Evergreen","A Tree That Moves",[
+    "You did not reach for any rooftop. Instead, you turned nineteen years of balance and canopy memory into an escape map only you could read — directing the townspeople from above the smoke, sending buckets along your pulleys into the fire, never once stepping onto the ground.",
+    "The morning the fire was contained, the townspeople did not ask \"when will you come down\" for the first time. Instead, they began writing you into textbooks as someone who had truly lived.",
+    "Many years later, one autumn, you followed a newly built rope bridge deep into the forest and walked farther and farther — no one ever saw you return. People say you finally became a tree that moves."
   ]);
 
-  S.ending_wisdom = endingScene('wisdom','Letters to the World','A Center Not on the Ground',[
-    'In the fire, you did not think of escape but of structure — using Elder Hua's mechanics, you calculated in ten minutes which section of the warehouse roof would collapse first, and called out the only correct evacuation route. No one was hurt.',
-    'After the fire, you began systematically writing down the clumsy methods of "how to live without landing" in letters to distant universities. You never held any title.',
-    'But many years later, strangers you never met would mention "the correspondent in the trees of Haiting" in their footnotes — you spent a lifetime proving that one can stand at the center of the world without standing on the ground.'
+  S.ending_wisdom = endingScene("wisdom","Letters to the World","A Center Not on the Ground",[
+    "In the fire, you did not think of escape but of structure — using Elder Hua's mechanics, you calculated in ten minutes which section of the warehouse roof would collapse first, and called out the only correct evacuation route. No one was hurt.",
+    "After the fire, you began systematically writing down the clumsy methods of \"how to live without landing\" in letters to distant universities. You never held any title.",
+    "But many years later, strangers you never met would mention \"the correspondent in the trees of Haiting\" in their footnotes — you spent a lifetime proving that one can stand at the center of the world without standing on the ground."
   ]);
 
-  S.ending_bond = endingScene('bond','The Bridge Between Trees','Closer to Others Than Anyone',[
-    'The first thing you thought of was not data, not escape routes, but Poria — you raced along the bridge that led only to her rooftop and pulled her and her father's ledgers from the attic, never once touching the ground.',
-    'The fire burned half the warehouse, but it also burned away the last barrier between you and the town. In the days that followed, you built more and more bridges, gradually connecting half the rooftops in town.',
-    'Children no longer said "the strange man in the trees" but "go find him by the bridge." You never landed once, yet you lived closer to others than anyone in town.'
+  S.ending_bond = endingScene("bond","The Bridge Between Trees","Closer to Others Than Anyone",[
+    "The first thing you thought of was not data, not escape routes, but Poria — you raced along the bridge that led only to her rooftop and pulled her and her father's ledgers from the attic, never once touching the ground.",
+    "The fire burned half the warehouse, but it also burned away the last barrier between you and the town. In the days that followed, you built more and more bridges, gradually connecting half the rooftops in town.",
+    "Children no longer said \"the strange man in the trees\" but \"go find him by the bridge.\" You never landed once, yet you lived closer to others than anyone in town."
   ]);
 
-  S.ending_ground = endingScene('ground','The Day You Decided','By My Own Choice',[
-    'Without thinking, your foot touched the ground — for the first time in nineteen years. The ground was hard, and hot, carrying a weight you had never felt before, the weight of "others."',
-    'You rushed into the fire and dragged Poria's father out, your own foot injured by a collapsing beam. After healing, you could have returned to the trees, but you did not — not because you had lost, but because you finally understood that the original vow was never about "never coming down," but about "when to come down, by my own choice."',
-    'The townspeople rarely spoke of your nineteen years afterward, but Poria remembered. She said the moment you descended was more like a free person than any day you spent in the trees.'
+  S.ending_ground = endingScene("ground","The Day You Decided","By My Own Choice",[
+    "Without thinking, your foot touched the ground — for the first time in nineteen years. The ground was hard, and hot, carrying a weight you had never felt before, the weight of \"others.\"",
+    "You rushed into the fire and dragged Poria's father out, your own foot injured by a collapsing beam. After healing, you could have returned to the trees, but you did not — not because you had lost, but because you finally understood that the original vow was never about \"never coming down,\" but about \"when to come down, by my own choice.\"",
+    "The townspeople rarely spoke of your nineteen years afterward, but Poria remembered. She said the moment you descended was more like a free person than any day you spent in the trees."
   ]);
 
   function computeEnding(){
-    var order = ['bond','wisdom','freedom'];
+    var order = ["bond","wisdom","freedom"];
     var best = order[0];
     order.forEach(function(k){ if(stats[k] > stats[best]) best = k; });
-    return 'ending_' + best;
+    return "ending_" + best;
   }
 
   function goto(id){
-    if(id === '__compute_ending__'){ id = computeEnding(); }
+    if(id === "__compute_ending__"){ id = computeEnding(); }
     var scene = S[id];
-    if(!scene) { console.error('Scene not found:', id); return; }
+    if(!scene) { console.error("Scene not found:", id); return; }
 
-    var root = document.getElementById('sceneRoot');
-    if(!root) { console.error('sceneRoot not found'); return; }
+    var root = document.getElementById("sceneRoot");
+    if(!root) { console.error("sceneRoot not found"); return; }
 
     if(scene.scene){ setScene(scene.scene.key, scene.scene.options); }
     if(scene.character){ showCharacter(scene.character.url, scene.character.name, scene.character.position); }
     else { showCharacter(null); }
 
     try { root.innerHTML = scene.render(); }
-    catch(e) { console.error('Render error:', e); root.innerHTML = '<div class="page"><p>加载出错，请刷新页面重试。</p></div>'; return; }
+    catch(e) { console.error("Render error:", e); root.innerHTML = '<div class="page"><p>Loading error. Please refresh the page.</p></div>'; return; }
 
     if(scene.bind){
       try { scene.bind(); }
-      catch(e) { console.error('Bind error:', e); }
+      catch(e) { console.error("Bind error:", e); }
     }
-    window.scrollTo({top:0, behavior:'instant'});
+    window.scrollTo({top:0, behavior:"instant"});
   }
 
   function init(){
     try {
-      setScene('cover', { particles: 'leaves', mist: true });
-      goto('cover');
+      setScene("cover", { particles: "leaves", mist: true });
+      goto("cover");
       setTimeout(function(){
-        var loading = document.getElementById('loadingScreen');
-        if(loading) loading.classList.add('hidden');
+        var loading = document.getElementById("loadingScreen");
+        if(loading) loading.classList.add("hidden");
       }, 1500);
     } catch(e) {
-      console.error('Init error:', e);
-      document.getElementById('sceneRoot').innerHTML = '<div class="page"><p>初始化失败，请刷新页面。</p></div>';
+      console.error("Init error:", e);
+      document.getElementById("sceneRoot").innerHTML = '<div class="page"><p>Initialization failed. Please refresh.</p></div>';
     }
   }
 
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', init);
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", init);
   } else { init(); }
 
-  document.addEventListener('click', function(){ initAudio(); }, { once: true });
+  document.addEventListener("click", function(){ initAudio(); }, { once: true });
 
 })();
 </script>
