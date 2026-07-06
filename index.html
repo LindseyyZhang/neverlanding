@@ -32,7 +32,6 @@
     overflow-x:hidden;
   }
 
-  /* 场景背景 */
   .scene-layer{
     position:fixed; inset:0; z-index:0;
     background-size: cover;
@@ -52,7 +51,6 @@
     pointer-events:none;
   }
 
-  /* 粒子 */
   .particle-layer{
     position:fixed; inset:0; z-index:2;
     pointer-events:none; overflow:hidden;
@@ -68,7 +66,6 @@
     100%{ transform: translateY(110vh) rotate(360deg); opacity:0; }
   }
 
-  /* 火光 */
   .fire-glow{
     position:fixed; inset:0; z-index:2;
     pointer-events:none; opacity:0;
@@ -81,7 +78,6 @@
     0%{ opacity:0.3; } 100%{ opacity:0.7; }
   }
 
-  /* 雾气 */
   .mist-layer{
     position:fixed; bottom:0; left:0; right:0; height:40vh; z-index:2;
     pointer-events:none;
@@ -93,7 +89,6 @@
     100%{ transform: translateX(20px); opacity:0.8; }
   }
 
-  /* 角色立绘 */
   .character-portrait{
     position:fixed; z-index:3;
     transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
@@ -114,7 +109,6 @@
     color: var(--parchment); opacity:0.7; white-space:nowrap;
   }
 
-  /* 主内容区 */
   .stage{
     position:relative; z-index:10;
     min-height:100vh;
@@ -149,7 +143,6 @@
     .character-portrait{ width:180px !important; }
   }
 
-  /* 标题 */
   .eyebrow{
     display:flex; align-items:baseline; gap:10px;
     font-family: var(--font-utility); font-size: 12px; letter-spacing: .16em;
@@ -164,7 +157,6 @@
     font-size: clamp(22px, 5vw, 30px); margin: 6px 0 18px;
   }
 
-  /* 属性 */
   .stats{
     display:flex; flex-direction:column; gap:6px;
     margin: 6px 0 26px; padding: 14px 16px;
@@ -185,7 +177,6 @@
   .leaf-icon.pulse{ animation: leafPop .5s ease; }
   @keyframes leafPop{ 0%{ transform: scale(.4); } 60%{ transform: scale(1.25); } 100%{ transform: scale(1); } }
 
-  /* 故事文字 */
   .story{ font-size: 16.5px; line-height: 1.95; }
   .story p{ margin: 0 0 1em; }
   .story p:first-of-type::first-letter{
@@ -199,7 +190,6 @@
     padding-left: 12px; margin: 18px 0 0; font-size: 15px;
   }
 
-  /* 选择 */
   .choices{ list-style:none; margin: 26px 0 0; padding:0; display:flex; flex-direction:column; gap:2px; }
   .choice-btn{
     width:100%; text-align:left; display:flex; align-items:center; gap:12px;
@@ -212,7 +202,6 @@
   .choice-btn:hover{ color: var(--ochre); padding-left: 12px; background: rgba(201,122,61,0.05); }
   .choice-btn:active{ transform: translateX(2px); }
 
-  /* 按钮 */
   .continue-row{ margin-top: 28px; display:flex; justify-content:flex-end; }
   .btn-continue, .btn-start, .btn-restart{
     font-family: var(--font-utility); font-size: 13px; letter-spacing:.08em;
@@ -225,7 +214,6 @@
     box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   }
 
-  /* 封面 */
   .cover{ text-align:center; padding: 18px 6px 4px; }
   .cover .kicker{
     font-family: var(--font-utility); font-size: 11.5px; letter-spacing:.22em;
@@ -236,11 +224,9 @@
   .cover .credit{ font-family: var(--font-utility); font-size: 11.5px; color: var(--bark-soft); margin-top: 26px; }
   .cover-divider{ width:48px; height:1px; background: var(--bark-soft); margin: 0 auto 26px; }
 
-  /* 终局 */
   .ending-tag{ font-family: var(--font-utility); font-size: 12px; letter-spacing:.18em; color: var(--ochre); margin-bottom: 6px; }
   .ending-stats{ margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--parchment-edge); font-family: var(--font-utility); font-size: 12px; color: var(--bark); }
 
-  /* 音效控制 */
   .audio-control{
     position:fixed; top:20px; right:20px; z-index:100;
     width:40px; height:40px;
@@ -256,7 +242,6 @@
   .audio-control svg{ width:18px; height:18px; fill: var(--parchment); }
   .audio-control.muted{ opacity:0.5; }
 
-  /* 语言切换 */
   .lang-switch{
     position:fixed; top:20px; left:20px; z-index:100;
     display:flex; gap:0;
@@ -283,7 +268,6 @@
     width:1px; background: rgba(239,230,204,0.2);
   }
 
-  /* 加载 */
   .loading-screen{
     position:fixed; inset:0; z-index:1000;
     background: var(--ink-green-deep);
@@ -317,14 +301,12 @@
   <div class="character-name" id="charName"></div>
 </div>
 
-<!-- 语言切换 -->
 <div class="lang-switch">
   <a href="./" class="active">中文</a>
   <div class="divider"></div>
   <a href="./en/">EN</a>
 </div>
 
-<!-- 音效控制 -->
 <div class="audio-control" id="audioControl" onclick="toggleAudio()">
   <svg id="audioIcon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
 </div>
@@ -340,7 +322,6 @@
 (function(){
   "use strict";
 
-  // ===================== 音效系统 =====================
   var audioCtx = null;
   var audioEnabled = true;
   var bgmOscillator = null;
@@ -429,7 +410,6 @@
     }
   };
 
-  // ===================== 场景系统 =====================
   var sceneImages = {
     cover: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1920&q=80',
     ch1: 'https://images.unsplash.com/photo-1511497584788-876760111969?w=1920&q=80',
@@ -503,7 +483,6 @@
     }
   }
 
-  // ===================== 角色立绘 =====================
   function showCharacter(imgUrl, name, position){
     var portrait = document.getElementById('charPortrait');
     var img = document.getElementById('charImg');
@@ -515,7 +494,6 @@
     setTimeout(function(){ portrait.classList.add('active'); }, 100);
   }
 
-  // ===================== 游戏状态 =====================
   var stats = { freedom: 0, wisdom: 0, bond: 0 };
 
   function leafIconColored(filled, cls, pulse){
@@ -543,7 +521,6 @@
     return '<span class="choice-twig"><svg viewBox="0 0 24 24"><path d="M12 2C7 6 3 11 3 15.5C3 20 7 23 12 23C17 23 21 20 21 15.5C21 11 17 6 12 2Z"/></svg></span>';
   }
 
-  // ===================== 故事数据 =====================
   var S = {};
 
   S.cover = {
@@ -647,8 +624,6 @@
       character: null
     };
   }
-
-  // ===================== 章节定义 =====================
 
   S.ch1_intro = textScene({
     chapter:'卷一', roman:'I', title:'誓言',
@@ -796,7 +771,6 @@
     scene: { key: 'ch4', options: { particles: 'embers', fire: true } }
   });
 
-  // ===================== 终局 =====================
   S.ending_freedom = endingScene('freedom','化作长青','长成一棵会移动的树',[
     '你没有去够任何一个屋顶，而是把十九年练就的平衡感和对树冠的记忆，变成了一张只有你看得懂的逃生地图——你在浓烟之上指挥镇上的人，把水桶顺着你架的滑轮一条条递进火场，自己始终没有踩进一寸地面。',
     '火被压住的那个清晨，镇上的人第一次没有问"你什么时候下来"，而是开始在课本里，把你写成一个真正活过的传说。',
@@ -828,7 +802,6 @@
     return 'ending_' + best;
   }
 
-  // ===================== 引擎 =====================
   function goto(id){
     if(id === '__compute_ending__'){ id = computeEnding(); }
     var scene = S[id];
@@ -851,7 +824,6 @@
     window.scrollTo({top:0, behavior:'instant'});
   }
 
-  // ===================== 初始化 =====================
   function init(){
     try {
       setScene('cover', { particles: 'leaves', mist: true });
