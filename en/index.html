@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Never Landing · A Fable</title>
+<title>The Man Who Never Landed · A Fable</title>
 <style>
   :root{
     --ink-green: #2B3A2C;
@@ -17,244 +16,302 @@
     --slate: #51707a;
     --ochre: #C97A3D;
     --ink-text: #2B2018;
-    --font-display: "EB Garamond", "Palatino Linotype", Georgia, serif;
-    --font-body: "EB Garamond", Georgia, "Times New Roman", serif;
-    --font-utility: "Libre Baskerville", "Georgia", serif;
-    --font-roman: "EB Garamond", Georgia, serif;
+    --font-display: "Noto Serif", "Georgia", "Times New Roman", serif;
+    --font-body: "Noto Serif", "Georgia", serif;
+    --font-utility: "Helvetica Neue", "Arial", sans-serif;
+    --font-roman: "EB Garamond", "Times New Roman", Georgia, serif;
   }
 
-  *{ box-sizing: border-box; }
+  *{ box-sizing: border-box; margin:0; padding:0; }
 
   html,body{
-    margin:0; padding:0; min-height:100%;
-    background: radial-gradient(ellipse at 50% -10%, #34452f 0%, var(--ink-green) 45%, var(--ink-green-deep) 100%);
+    min-height:100vh;
+    background: var(--ink-green-deep);
     color: var(--ink-text);
     font-family: var(--font-body);
     overflow-x:hidden;
   }
 
-  .canopy-bg{
-    position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;
+  .scene-layer{
+    position:fixed; inset:0; z-index:0;
+    background-size: cover;
+    background-position: center;
+    opacity:0;
+    transition: opacity 1.5s ease;
   }
-  .canopy-bg svg{ position:absolute; opacity:.16; }
-  .leaf-a{ top:-60px; left:-80px; width:420px; transform-origin: 20% 0%; animation: sway 9s ease-in-out infinite; }
-  .leaf-b{ top:-40px; right:-100px; width:480px; transform-origin: 80% 0%; animation: sway 11s ease-in-out infinite reverse; }
-  .leaf-c{ bottom:-80px; left:30%; width:380px; transform-origin: 50% 100%; animation: sway 13s ease-in-out infinite; }
-  @keyframes sway{
-    0%,100%{ transform: rotate(-1.4deg); }
-    50%{ transform: rotate(1.4deg); }
+  .scene-layer.active{ opacity:1; }
+
+  .scene-overlay{
+    position:fixed; inset:0; z-index:1;
+    background: linear-gradient(180deg, 
+      rgba(27,38,32,0.3) 0%, 
+      rgba(27,38,32,0.1) 30%,
+      rgba(27,38,32,0.4) 70%,
+      rgba(27,38,32,0.85) 100%);
+    pointer-events:none;
   }
-  @media (prefers-reduced-motion: reduce){
-    .leaf-a,.leaf-b,.leaf-c{ animation: none; }
+
+  .particle-layer{
+    position:fixed; inset:0; z-index:2;
+    pointer-events:none; overflow:hidden;
+  }
+  .particle{
+    position:absolute;
+    animation: fall linear infinite;
+  }
+  @keyframes fall{
+    0%{ transform: translateY(-10vh) rotate(0deg); opacity:0; }
+    10%{ opacity:0.6; }
+    90%{ opacity:0.4; }
+    100%{ transform: translateY(110vh) rotate(360deg); opacity:0; }
+  }
+
+  .fire-glow{
+    position:fixed; inset:0; z-index:2;
+    pointer-events:none; opacity:0;
+    background: radial-gradient(ellipse at 50% 60%, rgba(201,122,61,0.15) 0%, transparent 60%);
+    animation: firePulse 2s ease-in-out infinite alternate;
+    transition: opacity 1.5s ease;
+  }
+  .fire-glow.active{ opacity:1; }
+  @keyframes firePulse{
+    0%{ opacity:0.3; } 100%{ opacity:0.7; }
+  }
+
+  .mist-layer{
+    position:fixed; bottom:0; left:0; right:0; height:40vh; z-index:2;
+    pointer-events:none;
+    background: linear-gradient(0deg, rgba(239,230,204,0.08) 0%, transparent 100%);
+    animation: mistDrift 12s ease-in-out infinite alternate;
+  }
+  @keyframes mistDrift{
+    0%{ transform: translateX(-20px); opacity:0.5; }
+    100%{ transform: translateX(20px); opacity:0.8; }
+  }
+
+  .character-portrait{
+    position:fixed; z-index:3;
+    transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity:0; transform: translateY(20px);
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.5));
+  }
+  .character-portrait.active{ opacity:1; transform: translateY(0); }
+  .character-portrait.left{ left:5%; bottom:10%; width:280px; }
+  .character-portrait.right{ right:5%; bottom:10%; width:280px; }
+  .character-portrait img{
+    width:100%; height:auto; border-radius: 4px;
+    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  }
+  .character-name{
+    position:absolute; bottom:-30px; left:50%; transform:translateX(-50%);
+    font-family: var(--font-utility); font-size: 12px; letter-spacing: 0.15em;
+    color: var(--parchment); opacity:0.7; white-space:nowrap;
   }
 
   .stage{
-    position:relative; z-index:1;
+    position:relative; z-index:10;
     min-height:100vh;
-    display:flex; align-items:center; justify-content:center;
+    display:flex; align-items:flex-end; justify-content:center;
     padding: 40px 18px 60px;
   }
-
-  .book{ width:100%; max-width:640px; }
-
+  .book{
+    width:100%; max-width:720px;
+    margin-bottom: 5vh;
+  }
   .page{
-    background: var(--parchment);
-    border: 1px solid var(--parchment-edge);
-    box-shadow: 0 1px 0 var(--parchment-edge) inset, 0 24px 60px -20px rgba(0,0,0,.55);
+    background: rgba(239,230,204,0.92);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(220,203,160,0.6);
+    box-shadow: 0 24px 60px -20px rgba(0,0,0,0.6);
     padding: 38px 40px 34px;
     position:relative;
+    animation: pageEnter 0.6s ease;
+  }
+  @keyframes pageEnter{
+    from{ opacity:0; transform: translateY(30px); }
+    to{ opacity:1; transform: translateY(0); }
   }
   .page::before{
-    content:"";
-    position:absolute; top:0; left:0; right:0; height:5px;
+    content:""; position:absolute; top:0; left:0; right:0; height:5px;
     background: linear-gradient(90deg, var(--bark) 0%, var(--bark-soft) 50%, var(--bark) 100%);
   }
-  @media (max-width: 540px){ .page{ padding: 28px 22px 26px; } }
+
+  @media (max-width: 540px){
+    .page{ padding: 28px 22px 26px; }
+    .character-portrait{ width:180px !important; }
+  }
 
   .eyebrow{
     display:flex; align-items:baseline; gap:10px;
-    font-family: var(--font-utility);
-    font-size: 11px;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    color: var(--bark);
-    margin-bottom: 4px;
+    font-family: var(--font-utility); font-size: 12px; letter-spacing: .16em;
+    color: var(--bark); margin-bottom: 4px;
   }
   .eyebrow .roman{
-    font-family: var(--font-roman);
-    font-style: italic;
-    font-size: 15px;
-    letter-spacing: 0;
-    text-transform: none;
-    color: var(--ochre);
+    font-family: var(--font-roman); font-style: italic; font-size: 15px; color: var(--ochre);
   }
-  .eyebrow .twig-rule{ flex:1; height:1px; background: var(--parchment-edge); position:relative; top:1px; }
-
+  .eyebrow .twig-rule{ flex:1; height:1px; background: var(--parchment-edge); }
   h1.title{
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: clamp(22px, 5vw, 30px);
-    margin: 6px 0 18px;
-    color: var(--ink-text);
-    letter-spacing: .01em;
+    font-family: var(--font-display); font-weight:700;
+    font-size: clamp(22px, 5vw, 30px); margin: 6px 0 18px;
   }
 
   .stats{
     display:flex; flex-direction:column; gap:6px;
-    margin: 6px 0 26px;
-    padding: 14px 16px;
-    background: rgba(255,255,255,.18);
-    border: 1px solid var(--parchment-edge);
+    margin: 6px 0 26px; padding: 14px 16px;
+    background: rgba(255,255,255,0.25);
+    border: 1px solid rgba(220,203,160,0.5);
   }
   .stat-row{ display:flex; align-items:center; gap:10px; }
   .stat-label{
-    font-family: var(--font-utility);
-    font-size: 10.5px;
-    letter-spacing: .12em;
-    text-transform: uppercase;
-    width: 62px;
-    flex-shrink:0;
+    font-family: var(--font-utility); font-size: 11.5px;
+    letter-spacing: .1em; width: 70px; flex-shrink:0;
   }
   .stat-label.freedom{ color: var(--moss); }
   .stat-label.wisdom{ color: var(--slate); }
   .stat-label.bond{ color: var(--ochre); }
   .leaf-track{ display:flex; gap:4px; }
-  .leaf-icon{ width:13px; height:13px; flex-shrink:0; transition: transform .25s ease; }
+  .leaf-icon{ width:13px; height:13px; }
+  .leaf-icon.empty path{ fill: rgba(43,32,24,.14); }
   .leaf-icon.pulse{ animation: leafPop .5s ease; }
   @keyframes leafPop{ 0%{ transform: scale(.4); } 60%{ transform: scale(1.25); } 100%{ transform: scale(1); } }
 
-  .story{
-    font-size: 17px;
-    line-height: 1.9;
-    color: var(--ink-text);
-  }
+  .story{ font-size: 16.5px; line-height: 1.95; }
   .story p{ margin: 0 0 1em; }
   .story p:first-of-type::first-letter{
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 2.6em;
-    line-height: .78;
-    float:left;
-    padding: 4px 8px 0 0;
-    color: var(--bark);
+    font-family: var(--font-display); font-weight:700;
+    font-size: 2.5em; line-height: .8; float:left;
+    padding: 4px 8px 0 0; color: var(--bark);
   }
   .reaction{
-    font-style: italic;
-    color: var(--bark);
+    font-style: italic; color: var(--bark);
     border-left: 2px solid var(--parchment-edge);
-    padding-left: 12px;
-    margin: 18px 0 0;
-    font-size: 15.5px;
+    padding-left: 12px; margin: 18px 0 0; font-size: 15px;
   }
 
   .choices{ list-style:none; margin: 26px 0 0; padding:0; display:flex; flex-direction:column; gap:2px; }
   .choice-btn{
-    width:100%; text-align:left;
-    display:flex; align-items:center; gap:12px;
-    background:none; border:none; border-top: 1px solid var(--parchment-edge);
+    width:100%; text-align:left; display:flex; align-items:center; gap:12px;
+    background:none; border:none; border-top: 1px solid rgba(220,203,160,0.6);
     font-family: var(--font-body); font-size: 15.5px; color: var(--ink-text);
     padding: 13px 4px; cursor:pointer; min-height:44px;
-    transition: color .2s ease, padding-left .2s ease;
+    transition: all .3s ease;
   }
-  .choices li:last-child .choice-btn{ border-bottom: 1px solid var(--parchment-edge); }
-  .choice-twig{ position:relative; width:20px; height:14px; flex-shrink:0; }
-  .choice-twig::before{
-    content:""; position:absolute; left:0; top:7px; width:14px; height:2px;
-    background: var(--bark); transform: rotate(-18deg); transform-origin:left center;
-    transition: background .2s ease;
-  }
-  .choice-twig svg{ position:absolute; right:-1px; top:-1px; width:13px; height:13px; transition: transform .2s ease; }
-  .choice-twig svg path{ fill: var(--bark-soft); transition: fill .2s ease; }
-  .choice-btn:hover, .choice-btn:focus-visible{
-    color: var(--ochre); padding-left: 9px; outline: none;
-  }
-  .choice-btn:hover .choice-twig::before, .choice-btn:focus-visible .choice-twig::before{ background: var(--ochre); }
-  .choice-btn:hover .choice-twig svg, .choice-btn:focus-visible .choice-twig svg{ transform: scale(1.25) rotate(8deg); }
-  .choice-btn:hover .choice-twig svg path, .choice-btn:focus-visible .choice-twig svg path{ fill: var(--ochre); }
-  .choice-btn:focus-visible{ box-shadow: inset 0 0 0 1px var(--ochre); }
+  .choices li:last-child .choice-btn{ border-bottom: 1px solid rgba(220,203,160,0.6); }
+  .choice-btn:hover{ color: var(--ochre); padding-left: 12px; background: rgba(201,122,61,0.05); }
+  .choice-btn:active{ transform: translateX(2px); }
 
   .continue-row{ margin-top: 28px; display:flex; justify-content:flex-end; }
   .btn-continue, .btn-start, .btn-restart{
-    font-family: var(--font-utility);
-    font-size: 12px; letter-spacing:.12em; text-transform: uppercase;
+    font-family: var(--font-utility); font-size: 13px; letter-spacing:.08em;
     background: var(--bark); color: var(--parchment);
     border:none; padding: 11px 22px; cursor:pointer;
-    transition: background .2s ease, transform .15s ease;
+    transition: all .3s ease;
   }
-  .btn-continue:hover, .btn-start:hover, .btn-restart:hover{ background: var(--ink-green-deep); }
-  .btn-continue:active, .btn-start:active, .btn-restart:active{ transform: translateY(1px); }
-  .btn-continue:focus-visible, .btn-start:focus-visible, .btn-restart:focus-visible{
-    outline: 2px dashed var(--ochre); outline-offset: 2px;
+  .btn-continue:hover, .btn-start:hover, .btn-restart:hover{
+    background: var(--ink-green-deep); transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
   }
 
   .cover{ text-align:center; padding: 18px 6px 4px; }
   .cover .kicker{
-    font-family: var(--font-utility); font-size: 10.5px; letter-spacing:.24em;
-    text-transform: uppercase; color: var(--bark); margin-bottom: 14px;
+    font-family: var(--font-utility); font-size: 11.5px; letter-spacing:.22em;
+    color: var(--bark); margin-bottom: 14px;
   }
-  .cover h1{
-    font-size: clamp(28px, 7vw, 42px); margin: 0 0 16px; font-family: var(--font-display); font-weight:700;
-    letter-spacing: .01em;
-  }
-  .cover .lede{
-    font-size: 16px; line-height:1.85; color: var(--ink-text); max-width: 440px; margin: 0 auto 26px;
-    font-style: italic;
-  }
-  .cover .credit{
-    font-family: var(--font-utility); font-size: 11px; color: var(--bark-soft);
-    letter-spacing:.04em; margin-top: 26px;
-  }
+  .cover h1{ font-size: clamp(28px, 7vw, 38px); margin: 0 0 16px; font-family: var(--font-display); font-weight:700; }
+  .cover .lede{ font-size: 15.5px; line-height:1.9; max-width: 440px; margin: 0 auto 26px; }
+  .cover .credit{ font-family: var(--font-utility); font-size: 11.5px; color: var(--bark-soft); margin-top: 26px; }
   .cover-divider{ width:48px; height:1px; background: var(--bark-soft); margin: 0 auto 26px; }
 
-  .ending-tag{
-    font-family: var(--font-utility); font-size: 11px; letter-spacing:.18em; text-transform: uppercase;
-    color: var(--ochre); margin-bottom: 6px;
-  }
-  .ending-stats{
-    margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--parchment-edge);
-    font-family: var(--font-utility); font-size: 11.5px; color: var(--bark);
-    letter-spacing:.06em; text-transform: uppercase;
-  }
+  .ending-tag{ font-family: var(--font-utility); font-size: 12px; letter-spacing:.18em; color: var(--ochre); margin-bottom: 6px; }
+  .ending-stats{ margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--parchment-edge); font-family: var(--font-utility); font-size: 12px; color: var(--bark); }
 
-  .scene-anim{ animation: enterScene .5s ease; }
-  @keyframes enterScene{
-    from{ opacity:0; transform: translateY(8px); }
-    to{ opacity:1; transform: translateY(0); }
+  .audio-control{
+    position:fixed; top:20px; right:20px; z-index:100;
+    width:40px; height:40px;
+    background: rgba(239,230,204,0.15);
+    border: 1px solid rgba(239,230,204,0.3);
+    border-radius: 50%;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
   }
-  @media (prefers-reduced-motion: reduce){ .scene-anim{ animation: none; } }
+  .audio-control:hover{ background: rgba(239,230,204,0.3); }
+  .audio-control svg{ width:18px; height:18px; fill: var(--parchment); }
+  .audio-control.muted{ opacity:0.5; }
 
-  .footer-note{
-    text-align:center; margin-top: 22px; font-family: var(--font-utility);
-    font-size: 11px; letter-spacing:.08em; color: rgba(239,230,204,.4);
-    font-style: italic;
-  }
-
-  /* ---------- language switcher ---------- */
+  /* Language Switch */
   .lang-switch{
-    position:fixed; top:16px; right:18px; z-index:10;
-    display:flex; gap:1px;
+    position:fixed; top:20px; left:20px; z-index:100;
+    display:flex; gap:0;
+    background: rgba(239,230,204,0.15);
+    border: 1px solid rgba(239,230,204,0.3);
+    border-radius: 20px;
+    overflow:hidden;
+    backdrop-filter: blur(4px);
   }
-  .lang-btn{
-    font-family: var(--font-utility); font-size:11px; letter-spacing:.1em;
-    padding: 6px 11px; text-decoration:none; cursor:pointer;
-    background: rgba(239,230,204,.1); border:1px solid rgba(239,230,204,.25);
-    color: rgba(239,230,204,.55); transition: background .2s, color .2s, border-color .2s;
+  .lang-switch a{
+    font-family: var(--font-utility);
+    font-size: 12px; letter-spacing: 0.05em;
+    color: var(--parchment);
+    text-decoration:none;
+    padding: 8px 14px;
+    transition: all 0.3s ease;
   }
-  .lang-btn:hover{ background: rgba(239,230,204,.2); color: rgba(239,230,204,.9); border-color: rgba(239,230,204,.45); }
-  .lang-btn.active{ background: rgba(239,230,204,.18); color: rgba(239,230,204,.95); border-color: rgba(239,230,204,.5); font-weight:600; cursor:default; }
+  .lang-switch a:hover{ background: rgba(239,230,204,0.2); }
+  .lang-switch a.active{
+    background: rgba(239,230,204,0.35);
+    font-weight: 600;
+  }
+  .lang-switch .divider{
+    width:1px; background: rgba(239,230,204,0.2);
+  }
+
+  .loading-screen{
+    position:fixed; inset:0; z-index:1000;
+    background: var(--ink-green-deep);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    transition: opacity 1s ease, visibility 1s ease;
+  }
+  .loading-screen.hidden{ opacity:0; visibility:hidden; pointer-events:none; }
+  .loading-leaf{ width:60px; height:60px; animation: spin 2s ease-in-out infinite; }
+  @keyframes spin{ 0%{ transform: rotate(0deg); } 50%{ transform: rotate(180deg) scale(1.1); } 100%{ transform: rotate(360deg); } }
+  .loading-text{ font-family: var(--font-utility); font-size: 12px; letter-spacing: 0.2em; color: var(--parchment); opacity:0.6; margin-top: 20px; }
+
+  .footer-note{ text-align:center; margin-top: 22px; font-family: var(--font-utility); font-size: 11px; color: rgba(239,230,204,.45); }
 </style>
+<base target="_blank">
 </head>
 <body>
 
-<nav class="lang-switch" aria-label="Language">
-  <a class="lang-btn" href="../">中文</a>
-  <span class="lang-btn active" aria-current="true">EN</span>
-</nav>
+<div class="loading-screen" id="loadingScreen">
+  <svg class="loading-leaf" viewBox="0 0 24 24"><path d="M12 2C7 6 3 11 3 15.5C3 20 7 23 12 23C17 23 21 20 21 15.5C21 11 17 6 12 2Z" fill="#7E9A63"/></svg>
+  <div class="loading-text">Entering the town of Haiting...</div>
+</div>
 
-<div class="canopy-bg" aria-hidden="true">
-  <svg class="leaf-a" viewBox="0 0 200 160"><path d="M10 0C60 10 140 30 170 90C190 130 150 160 100 150C50 140 10 100 0 60C-6 35 -10 5 10 0Z" fill="#000"/></svg>
-  <svg class="leaf-b" viewBox="0 0 220 170"><path d="M210 0C150 20 60 30 25 90C0 135 50 165 110 150C165 137 205 95 215 55C222 30 225 5 210 0Z" fill="#000"/></svg>
-  <svg class="leaf-c" viewBox="0 0 200 150"><path d="M100 150C60 130 0 100 5 55C9 20 60 -5 110 5C160 15 190 50 185 85C180 120 140 145 100 150Z" fill="#000"/></svg>
+<div class="scene-layer" id="sceneBg"></div>
+<div class="scene-overlay"></div>
+<div class="particle-layer" id="particleLayer"></div>
+<div class="fire-glow" id="fireGlow"></div>
+<div class="mist-layer" id="mistLayer"></div>
+
+<div class="character-portrait" id="charPortrait">
+  <img src="" alt="" id="charImg">
+  <div class="character-name" id="charName"></div>
+</div>
+
+<!-- Language Switch -->
+<div class="lang-switch">
+  <a href="../">中文</a>
+  <div class="divider"></div>
+  <a href="./" class="active">EN</a>
+</div>
+
+<!-- Audio Control -->
+<div class="audio-control" id="audioControl" onclick="toggleAudio()">
+  <svg id="audioIcon" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
 </div>
 
 <div class="stage">
@@ -266,22 +323,195 @@
 
 <script>
 (function(){
+  "use strict";
 
+  // ===================== Audio System =====================
+  var audioCtx = null;
+  var audioEnabled = true;
+  var bgmOscillator = null;
+  var bgmGain = null;
+
+  function initAudio(){
+    if(!audioCtx){
+      try { audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+      catch(e) { console.log("Audio not supported"); }
+    }
+  }
+
+  function playTone(freq, duration, type, volume){
+    if(!audioEnabled || !audioCtx) return;
+    try {
+      var osc = audioCtx.createOscillator();
+      var gain = audioCtx.createGain();
+      osc.type = type || 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(volume || 0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    } catch(e) {}
+  }
+
+  function playAmbientBgm(){
+    if(!audioEnabled || !audioCtx) return;
+    if(bgmOscillator) return;
+    try {
+      bgmOscillator = audioCtx.createOscillator();
+      bgmGain = audioCtx.createGain();
+      bgmOscillator.type = 'sine';
+      bgmOscillator.frequency.setValueAtTime(110, audioCtx.currentTime);
+      bgmGain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+      bgmOscillator.connect(bgmGain);
+      bgmGain.connect(audioCtx.destination);
+      bgmOscillator.start();
+    } catch(e) {}
+  }
+
+  function stopAmbientBgm(){
+    if(bgmOscillator){ try { bgmOscillator.stop(); } catch(e) {} bgmOscillator = null; }
+  }
+
+  function playChoiceSound(){
+    playTone(440, 0.15, 'sine', 0.08);
+    setTimeout(function(){ playTone(554, 0.15, 'sine', 0.06); }, 80);
+  }
+
+  function playPageTurnSound(){
+    playTone(330, 0.3, 'triangle', 0.05);
+  }
+
+  function playFireSound(){
+    if(!audioEnabled || !audioCtx) return;
+    try {
+      var bufferSize = audioCtx.sampleRate * 2;
+      var buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      var data = buffer.getChannelData(0);
+      for(var i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.05;
+      var noise = audioCtx.createBufferSource();
+      noise.buffer = buffer;
+      var filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass'; filter.frequency.value = 400;
+      var gain = audioCtx.createGain(); gain.gain.value = 0.08;
+      noise.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+      noise.start(); noise.stop(audioCtx.currentTime + 3);
+    } catch(e) {}
+  }
+
+  window.toggleAudio = function(){
+    audioEnabled = !audioEnabled;
+    var btn = document.getElementById('audioControl');
+    var icon = document.getElementById('audioIcon');
+    if(audioEnabled){
+      btn.classList.remove('muted');
+      icon.innerHTML = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>';
+      initAudio(); playAmbientBgm();
+    } else {
+      btn.classList.add('muted');
+      icon.innerHTML = '<path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 1L9.91 3.09 12 5.18V1z"/>';
+      stopAmbientBgm();
+    }
+  };
+
+  // ===================== Scene System =====================
+  var sceneImages = {
+    cover: 'https://images.unsplash.com/photo-1448375240586-882707db888b?w=1920&q=80',
+    ch1: 'https://images.unsplash.com/photo-1511497584788-876760111969?w=1920&q=80',
+    ch2: 'https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?w=1920&q=80',
+    ch3: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&q=80',
+    ch4: 'https://images.unsplash.com/photo-1541963463532-d68292c34b19?w=1920&q=80',
+    fire: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&q=80',
+    ending: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=1920&q=80'
+  };
+
+  function setScene(sceneKey, options){
+    options = options || {};
+    var bg = document.getElementById('sceneBg');
+    var fire = document.getElementById('fireGlow');
+    var mist = document.getElementById('mistLayer');
+    var particles = document.getElementById('particleLayer');
+    var imgUrl = sceneImages[sceneKey] || sceneImages.cover;
+
+    var img = new Image();
+    img.onload = function(){ bg.style.backgroundImage = 'url(' + imgUrl + ')'; bg.classList.add('active'); };
+    img.onerror = function(){ bg.style.background = 'linear-gradient(180deg, #2B3A2C 0%, #1B2620 100%)'; bg.classList.add('active'); };
+    img.src = imgUrl;
+
+    if(options.fire){ fire.classList.add('active'); playFireSound(); }
+    else { fire.classList.remove('active'); }
+
+    mist.style.opacity = options.mist !== false ? '1' : '0';
+
+    particles.innerHTML = '';
+    if(options.particles === 'leaves') createLeaves();
+    else if(options.particles === 'embers') createEmbers();
+    else if(options.particles === 'snow') createSnow();
+  }
+
+  function createLeaves(){
+    var container = document.getElementById('particleLayer');
+    for(var i = 0; i < 15; i++){
+      var leaf = document.createElement('div');
+      leaf.className = 'particle';
+      leaf.style.left = Math.random() * 100 + '%';
+      leaf.style.animationDuration = (8 + Math.random() * 12) + 's';
+      leaf.style.animationDelay = Math.random() * 10 + 's';
+      leaf.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24"><path d="M12 2C7 6 3 11 3 15.5C3 20 7 23 12 23C17 23 21 20 21 15.5C21 11 17 6 12 2Z" fill="rgba(126,154,99,' + (0.3 + Math.random() * 0.4) + ')"/></svg>';
+      container.appendChild(leaf);
+    }
+  }
+
+  function createEmbers(){
+    var container = document.getElementById('particleLayer');
+    for(var i = 0; i < 20; i++){
+      var ember = document.createElement('div');
+      ember.className = 'particle';
+      ember.style.left = Math.random() * 100 + '%';
+      ember.style.animationDuration = (3 + Math.random() * 5) + 's';
+      ember.style.animationDelay = Math.random() * 5 + 's';
+      ember.innerHTML = '<div style="width:4px;height:4px;border-radius:50%;background:rgba(201,122,61,' + (0.4 + Math.random() * 0.6) + ');box-shadow:0 0 6px rgba(201,122,61,0.5);"></div>';
+      container.appendChild(ember);
+    }
+  }
+
+  function createSnow(){
+    var container = document.getElementById('particleLayer');
+    for(var i = 0; i < 25; i++){
+      var snow = document.createElement('div');
+      snow.className = 'particle';
+      snow.style.left = Math.random() * 100 + '%';
+      snow.style.animationDuration = (6 + Math.random() * 10) + 's';
+      snow.style.animationDelay = Math.random() * 8 + 's';
+      snow.innerHTML = '<div style="width:3px;height:3px;border-radius:50%;background:rgba(255,255,255,' + (0.3 + Math.random() * 0.5) + ');"></div>';
+      container.appendChild(snow);
+    }
+  }
+
+  // ===================== Character Portrait =====================
+  function showCharacter(imgUrl, name, position){
+    var portrait = document.getElementById('charPortrait');
+    var img = document.getElementById('charImg');
+    var nameEl = document.getElementById('charName');
+    portrait.classList.remove('active', 'left', 'right');
+    if(!imgUrl){ setTimeout(function(){ portrait.classList.remove('active'); }, 300); return; }
+    img.src = imgUrl; img.alt = name || ''; nameEl.textContent = name || '';
+    portrait.classList.add(position || 'right');
+    setTimeout(function(){ portrait.classList.add('active'); }, 100);
+  }
+
+  // ===================== Game State =====================
   var stats = { freedom: 0, wisdom: 0, bond: 0 };
 
   function leafIconColored(filled, cls, pulse){
-    var color = filled
-      ? 'var(--'+(cls==='freedom'?'moss':cls==='wisdom'?'slate':'ochre')+')'
-      : 'rgba(43,32,24,.14)';
-    return '<svg class="leaf-icon'+(pulse?' pulse':'')+'" viewBox="0 0 24 24">' +
-      '<path d="M12 2C7 6 3 11 3 15.5C3 20 7 23 12 23C17 23 21 20 21 15.5C21 11 17 6 12 2Z" fill="'+color+'"/></svg>';
+    var color = filled ? 'var(--'+(cls==='freedom'?'moss':cls==='wisdom'?'slate':'ochre')+')' : 'rgba(43,32,24,.14)';
+    return '<svg class="leaf-icon'+(pulse?' pulse':'')+'" viewBox="0 0 24 24"><path d="M12 2C7 6 3 11 3 15.5C3 20 7 23 12 23C17 23 21 20 21 15.5C21 11 17 6 12 2Z" fill="'+color+'"/></svg>';
   }
 
   function statRow(label, cls, value, changedKey){
-    var leaves = '';
-    var filledCount = Math.min(6, Math.round(value/2));
+    var leaves = '', filledCount = Math.min(6, Math.round(value/2));
     for(var i=0;i<6;i++){
-      leaves += leafIconColored(i < filledCount, cls, changedKey===cls && i===filledCount-1);
+      leaves += leafIconColored(i < filledCount, cls, changedKey===cls && i === filledCount-1);
     }
     return '<div class="stat-row"><span class="stat-label '+cls+'">'+label+'</span><span class="leaf-track">'+leaves+'</span></div>';
   }
@@ -298,319 +528,282 @@
     return '<span class="choice-twig"><svg viewBox="0 0 24 24"><path d="M12 2C7 6 3 11 3 15.5C3 20 7 23 12 23C17 23 21 20 21 15.5C21 11 17 6 12 2Z"/></svg></span>';
   }
 
+  // ===================== Story Data =====================
   var S = {};
 
-  // ---- cover ----
   S.cover = {
     render: function(){
-      return '<div class="page scene-anim cover">' +
-        '<div class="kicker">An Interactive Fable</div>' +
-        '<h1>Never Landing</h1>' +
+      return '<div class="page cover">' +
+        '<div class="kicker">AN INTERACTIVE FABLE</div>' +
+        '<h1>The Man Who Never Landed</h1>' +
         '<div class="cover-divider"></div>' +
-        '<p class="lede">At eleven years old, you climbed the old coral tree in the courtyard and made a vow: your feet would never touch the ground again. No one knew what kind of life that decision would grow into.</p>' +
-        '<button class="btn-start" id="startBtn">Climb up</button>' +
-        '<div class="credit">Inspired by Italo Calvino\'s <em>The Baron in the Trees</em> &nbsp;·&nbsp; All characters and story are original</div>' +
+        '<p class="lede">At the age of eleven, you climbed the old tree in the courtyard and made a vow: never again would your feet touch the ground. No one knew what that decision would make of your life.</p>' +
+        '<button class="btn-start" id="startBtn">Climb Up</button>' +
+        '<div class="credit">Inspired by Italo Calvino's "The Baron in the Trees" — Characters and plot are original adaptations</div>' +
         '</div>';
     },
-    bind: function(){ document.getElementById('startBtn').onclick = function(){ goto('ch1_intro'); }; }
+    bind: function(){
+      document.getElementById('startBtn').onclick = function(){ 
+        initAudio(); playAmbientBgm(); playPageTurnSound(); goto('ch1_intro'); 
+      };
+    },
+    scene: { key: 'cover', options: { particles: 'leaves', mist: true } },
+    character: null
   };
 
   function textScene(opts){
     return {
       render: function(changedKey){
-        var eyebrow = opts.chapter
-          ? '<div class="eyebrow"><span>'+opts.chapter+'</span><span class="roman">'+opts.roman+'</span><span class="twig-rule"></span></div>' : '';
+        var eyebrow = opts.chapter ? '<div class="eyebrow"><span>'+opts.chapter+'</span><span class="roman">'+opts.roman+'</span><span class="twig-rule"></span></div>' : '';
         var title = opts.title ? '<h1 class="title">'+opts.title+'</h1>' : '';
         var statsHtml = opts.showStats ? renderStats(changedKey) : '';
         var body = '<div class="story">' + opts.paras.map(function(p){ return '<p>'+p+'</p>'; }).join('') + '</div>';
-        return '<div class="page scene-anim">' + eyebrow + title + statsHtml + body +
+        return '<div class="page">' + eyebrow + title + statsHtml + body +
           '<div class="continue-row"><button class="btn-continue" id="contBtn">Continue</button></div></div>';
       },
-      bind: function(){ document.getElementById('contBtn').onclick = function(){ goto(opts.next); }; }
+      bind: function(){
+        document.getElementById('contBtn').onclick = function(){ playPageTurnSound(); goto(opts.next); };
+      },
+      scene: opts.scene || { key: 'ch1', options: { particles: 'leaves' } },
+      character: opts.character || null
     };
   }
 
   function choiceScene(opts){
     return {
       render: function(changedKey){
-        var eyebrow = opts.chapter
-          ? '<div class="eyebrow"><span>'+opts.chapter+'</span><span class="roman">'+opts.roman+'</span><span class="twig-rule"></span></div>' : '';
+        var eyebrow = opts.chapter ? '<div class="eyebrow"><span>'+opts.chapter+'</span><span class="roman">'+opts.roman+'</span><span class="twig-rule"></span></div>' : '';
         var title = opts.title ? '<h1 class="title">'+opts.title+'</h1>' : '';
         var statsHtml = opts.showStats ? renderStats(changedKey) : '';
         var body = '<div class="story">' + opts.paras.map(function(p){ return '<p>'+p+'</p>'; }).join('') + '</div>';
         var items = opts.options.map(function(o,i){
           return '<li><button class="choice-btn" data-i="'+i+'">'+choiceTwigSVG()+'<span>'+o.label+'</span></button></li>';
         }).join('');
-        return '<div class="page scene-anim">' + eyebrow + title + statsHtml + body +
+        return '<div class="page">' + eyebrow + title + statsHtml + body +
           '<ul class="choices">' + items + '</ul></div>';
       },
       bind: function(){
-        document.querySelectorAll('.choice-btn').forEach(function(btn){
+        var btns = document.querySelectorAll('.choice-btn');
+        btns.forEach(function(btn){
           btn.onclick = function(){
+            playChoiceSound();
             var o = opts.options[parseInt(btn.getAttribute('data-i'),10)];
             if(o.special){ goto(o.special); return; }
             if(o.stat){ stats[o.stat] += o.delta; }
             showReaction(opts, o);
           };
         });
-      }
+      },
+      scene: opts.scene || { key: 'ch1', options: { particles: 'leaves' } },
+      character: opts.character || null
     };
   }
 
   function showReaction(opts, o){
-    var eyebrow = opts.chapter
-      ? '<div class="eyebrow"><span>'+opts.chapter+'</span><span class="roman">'+opts.roman+'</span><span class="twig-rule"></span></div>' : '';
+    var eyebrow = opts.chapter ? '<div class="eyebrow"><span>'+opts.chapter+'</span><span class="roman">'+opts.roman+'</span><span class="twig-rule"></span></div>' : '';
     var title = opts.title ? '<h1 class="title">'+opts.title+'</h1>' : '';
     var statsHtml = opts.showStats ? renderStats(o.stat) : '';
     var body = '<div class="story">' + opts.paras.map(function(p){ return '<p>'+p+'</p>'; }).join('') + '</div>';
-    document.getElementById('sceneRoot').innerHTML =
-      '<div class="page scene-anim">' + eyebrow + title + statsHtml + body +
+    var root = document.getElementById('sceneRoot');
+    root.innerHTML = '<div class="page">' + eyebrow + title + statsHtml + body +
       '<p class="reaction">'+o.reaction+'</p>' +
       '<div class="continue-row"><button class="btn-continue" id="contBtn2">Continue</button></div></div>';
-    document.getElementById('contBtn2').onclick = function(){ goto(o.next); };
+    document.getElementById('contBtn2').onclick = function(){ playPageTurnSound(); goto(o.next); };
   }
 
   function endingScene(key, eyebrowTag, title, paras){
     return {
       render: function(){
         var body = '<div class="story">' + paras.map(function(p){ return '<p>'+p+'</p>'; }).join('') + '</div>';
-        var summary = '<div class="ending-stats">Freedom &nbsp;'+stats.freedom+'&ensp;·&ensp; Wisdom &nbsp;'+stats.wisdom+'&ensp;·&ensp; Bond &nbsp;'+stats.bond+'</div>';
-        return '<div class="page scene-anim">' +
-          '<div class="ending-tag">Ending &nbsp;·&nbsp; '+eyebrowTag+'</div>' +
+        var summary = '<div class="ending-stats">Freedom '+stats.freedom+' · Wisdom '+stats.wisdom+' · Bond '+stats.bond+'</div>';
+        return '<div class="page">' +
+          '<div class="ending-tag">ENDING · '+eyebrowTag+'</div>' +
           '<h1 class="title">'+title+'</h1>' +
           body + summary +
-          '<div class="continue-row"><button class="btn-restart" id="restartBtn">Climb again</button></div></div>';
+          '<div class="continue-row"><button class="btn-restart" id="restartBtn">Climb Again</button></div></div>';
       },
       bind: function(){
         document.getElementById('restartBtn').onclick = function(){
           stats = { freedom:0, wisdom:0, bond:0 };
-          goto('cover');
+          playPageTurnSound(); goto('cover');
         };
-      }
+      },
+      scene: { key: 'ending', options: { particles: 'leaves', mist: true } },
+      character: null
     };
   }
 
-  // ==============================
-  // CHAPTER 1 · THE VOW
-  // ==============================
+  // ===================== Chapter Definitions =====================
 
   S.ch1_intro = textScene({
-    chapter:'Book I', roman:'The Vow', title:'The Vow',
-    paras:[
-      'The summer you turned eleven, the air in Haiting smelled of pickled olives and the salt of ships just returned. Your father — the most respectable freight merchant in town — slid a plate of steamed snails across the dinner table for the third time. This was his idea of the right food. Part of his idea of the right life.',
-      'You slid it back. A chair hit the floor with a sound that rang through the house. You ran out the door and climbed the old coral tree in the courtyard. You never thought that climb would last a lifetime.'
-    ],
-    next:'ch1_choiceA'
+    chapter:'BOOK ONE', roman:'I', title:'The Vow',
+    paras:['That summer, at eleven years old, the air of Haiting was thick with the scent of pickled olives and salt from returning ships. Your father, the most respectable freight merchant in town, pushed a plate of steamed snails toward you for the third time at dinner — this was what he deemed "the right food," and part of what he deemed "the right life."','You pushed the plate back. The chair fell loudly. You ran out the door and climbed the century-old coral tree in the courtyard. You did not know then that this climb would last a lifetime.'],
+    next:'ch1_choiceA',
+    scene: { key: 'ch1', options: { particles: 'leaves', mist: true } }
   });
 
   S.ch1_choiceA = choiceScene({
-    chapter:'Book I', roman:'The Vow', title:'The Vow',
-    paras:['Night crept up through the branches. You sat on the first limb wide enough to hold you and, for the first time, asked yourself honestly: what did you actually want, in that moment?'],
+    chapter:'BOOK ONE', roman:'I', title:'The Vow',
+    paras:['Night crept in slowly. You sat on the first sturdy branch and asked yourself, for the first time with real seriousness: In that moment just now, what was it you truly wanted?'],
     options:[
-      { label:'The bark is rough — but the wind is free.',
-        stat:'freedom', delta:2,
-        reaction:'You leaned back against the trunk. For the first time you felt it: looking down was dizzier than looking up. The dizziness was the rules.',
-        next:'ch1_bridge' },
-      { label:'You wanted to see what the world looks like from a place no one can reach you.',
-        stat:'wisdom', delta:2,
-        reaction:'You counted the veins of a single leaf, as though cataloguing the chapters of a book that hadn\'t been written yet.',
-        next:'ch1_bridge' },
-      { label:'You wanted to see who would look up when you disappeared.',
-        stat:'bond', delta:2,
-        reaction:'You heard your mother calling your name from below. There was a seriousness in her voice you had never heard before.',
-        next:'ch1_bridge' }
-    ]
+      { label:'The bark is rough, but the wind is free', stat:'freedom', delta:2,
+        reaction:'You leaned against the trunk and, for the first time, felt that looking down made you more dizzy than looking up — dizzy from the weight of rules.', next:'ch1_bridge' },
+      { label:'You want to know what the world looks like where no one can reach you', stat:'wisdom', delta:2,
+        reaction:'You counted the veins of the leaves like counting the table of contents of a book not yet written.', next:'ch1_bridge' },
+      { label:'You want to see who would look up because you are gone', stat:'bond', delta:2,
+        reaction:'You heard your mother calling your name from below, with a kind of earnestness you had never heard before.', next:'ch1_bridge' }
+    ],
+    scene: { key: 'ch1', options: { particles: 'leaves' } }
   });
 
   S.ch1_bridge = textScene({
-    chapter:'Book I', roman:'The Vow',
-    paras:['The first night was cold. The townspeople confirmed you hadn\'t entirely lost your mind, each in their own way — someone left a blanket at the base of the tree; others simply watched from a distance and said nothing.'],
-    next:'ch1_choiceB'
+    chapter:'BOOK ONE', roman:'I',
+    paras:['The first night was cold. The townspeople began finding ways to confirm whether you were still "normal" — someone left a quilt beneath the tree; someone simply watched from afar and said nothing.'],
+    next:'ch1_choiceB',
+    scene: { key: 'ch1', options: { particles: 'leaves', mist: true } }
   });
 
   S.ch1_choiceB = choiceScene({
-    chapter:'Book I', roman:'The Vow', title:'The Vow',
-    paras:['You had to decide how to spend the nights ahead.'],
+    chapter:'BOOK ONE', roman:'I', title:'The Vow',
+    paras:['You must decide how to spend each night from now on.'],
     options:[
-      { label:'Rig a hammock. Make the tree your room.',
-        stat:'freedom', delta:2,
-        reaction:'You built your first bed from rope and old canvas. Swaying in it, you slept more soundly than you ever had in the house.',
-        next:'ch2_intro' },
-      { label:'Have someone lend you a thick book to get through the dark.',
-        stat:'wisdom', delta:2,
-        reaction:'The boy who brought it said nobody in town could work out what you were doing up there — but everyone wanted to know how it ended.',
-        next:'ch2_intro' },
-      { label:'Arrange three whistle signals with your sister, to stay in touch.',
-        stat:'bond', delta:2,
-        reaction:'Safe. Need something. And a third — meaning: don\'t let Father know.',
-        next:'ch2_intro' }
-    ]
+      { label:'Hang a hammock and make the tree your room', stat:'freedom', delta:2,
+        reaction:'You made your first bed from rope and old canvas, and slept more soundly in the swaying than any night at home.', next:'ch2_intro' },
+      { label:'Ask someone to lend you a thick book to pass the long nights', stat:'wisdom', delta:2,
+        reaction:'The boy who brought the book said no one in town could figure out what you were doing, but everyone wanted to know how it ended.', next:'ch2_intro' },
+      { label:'Arrange three whistle signals with your sister to stay connected', stat:'bond', delta:2,
+        reaction:'Safe, need something, and a third one that meant "don't let Father know."', next:'ch2_intro' }
+    ],
+    scene: { key: 'ch1', options: { particles: 'leaves' } }
   });
 
-  // ==============================
-  // CHAPTER 2 · CANOPY ENGINEERING
-  // ==============================
-
   S.ch2_intro = textScene({
-    chapter:'Book II', roman:'Canopy Engineering', title:'Canopy Engineering',
-    paras:[
-      'The days passed. One tree was not enough. You began stringing rope bridges between the oaks and fig trees, turning the grove at the edge of town into a country only you knew how to navigate.',
-      'The townspeople split into two camps: those who said you\'d lost your mind, and those who started tiptoeing beneath the canopy to borrow things from you.'
-    ],
-    next:'ch2_choiceA'
+    chapter:'BOOK TWO', roman:'II', title:'The Canopy Project',
+    paras:['Days passed, and one tree became an insufficient house. You began building rope bridges between the neighboring oaks and fig trees, gradually turning the edge of town's forest into a territory only you knew how to navigate.','The townspeople slowly divided into two factions: one said you were mad; the other began tiptoeing beneath the shade to ask you for things.'],
+    next:'ch2_choiceA',
+    scene: { key: 'ch2', options: { particles: 'leaves' } }
   });
 
   S.ch2_choiceA = choiceScene({
-    chapter:'Book II', roman:'Canopy Engineering', title:'Canopy Engineering',
-    paras:['How did you want to build?'],
+    chapter:'BOOK TWO', roman:'II', title:'The Canopy Project',
+    paras:['How do you plan to build these bridges?'],
     options:[
-      { label:'Fast and wide — claim the whole grove.',
-        stat:'freedom', delta:2,
-        reaction:'Your territory grew day by day until no one could say how many paths ran through the grove\'s edge.',
-        next:'ch2_bridge' },
-      { label:'Draw each span first, calculate the load, never go back to fix mistakes.',
-        stat:'wisdom', delta:2,
-        reaction:'You started carrying a notebook, recording which knots held best through the wet season.',
-        next:'ch2_bridge' },
-      { label:'Only where the chimneys of town are still visible.',
-        stat:'bond', delta:2,
-        reaction:'Every dusk you counted the lights coming on, tracking who had not yet lit their fire.',
-        next:'ch2_bridge' }
-    ]
+      { label:'Build them fast and numerous, covering the whole forest', stat:'freedom', delta:2,
+        reaction:'Your territory expanded day by day. No one could say anymore how many paths wound through the forest at the edge of town.', next:'ch2_bridge' },
+      { label:'Draw and calculate the weight of each section — never redo', stat:'wisdom', delta:2,
+        reaction:'You began carrying a notebook, recording which knots best withstood the wind of the rainy season.', next:'ch2_bridge' },
+      { label:'Build only between the trees where you can see the town's chimneys smoking', stat:'bond', delta:2,
+        reaction:'Every dusk, you counted the distant lights, checking whose house had not yet lit a fire.', next:'ch2_bridge' }
+    ],
+    scene: { key: 'ch2', options: { particles: 'leaves' } }
   });
 
   S.ch2_bridge = textScene({
-    chapter:'Book II', roman:'Canopy Engineering',
-    paras:['One rainy morning, the blacksmith craned his neck to look up at you, slipped from his ladder, and landed hard on the stone steps of his own front door.'],
-    next:'ch2_choiceB'
+    chapter:'BOOK TWO', roman:'II',
+    paras:['One rainy morning, the blacksmith looked up at you, slipped on his ladder, and fell onto the stone steps in front of his own door.'],
+    next:'ch2_choiceB',
+    scene: { key: 'ch2', options: { particles: 'snow', mist: true } }
   });
 
   S.ch2_choiceB = choiceScene({
-    chapter:'Book II', roman:'Canopy Engineering', title:'Canopy Engineering',
-    paras:['He shouted something from below. You couldn\'t tell if it was a curse or a call.'],
+    chapter:'BOOK TWO', roman:'II', title:'The Canopy Project',
+    paras:['He shouted from below — whether cursing you or calling you, you could not tell.'],
     options:[
-      { label:'"Ladders are for people who live on the ground." You got back to work.',
-        stat:'freedom', delta:2,
-        reaction:'He never sought you out for conversation again — but he stopped calling you mad. He said you were proof there was another way to live.',
-        next:'ch3_intro' },
-      { label:'You stayed up all night designing a pulley system for passing things without coming down.',
-        stat:'wisdom', delta:2,
-        reaction:'Three days later, four households in town had quietly installed the same hook under their own eaves.',
-        next:'ch3_intro' },
-      { label:'You slid halfway down the rope and reached out a hand.',
-        stat:'bond', delta:2,
-        reaction:'Your feet never touched the earth. But that was the closest you had ever come to landing.',
-        next:'ch3_intro' }
-    ]
+      { label:'Drop a line: "Ladders are for those who live on the ground," and keep working', stat:'freedom', delta:2,
+        reaction:'The blacksmith never spoke to you again, but he never called you mad either — he said you were evidence of another way to live.', next:'ch3_intro' },
+      { label:'Spend the night designing a pulley system to send messages without descending', stat:'wisdom', delta:2,
+        reaction:'Three days later, four households in town quietly installed the same hook beneath their own eaves.', next:'ch3_intro' },
+      { label:'Slide halfway down the rope and reach out a hand', stat:'bond', delta:2,
+        reaction:'Your toes never touched the ground, but it was the closest you had ever come to "landing" for another person.', next:'ch3_intro' }
+    ],
+    scene: { key: 'ch2', options: { particles: 'snow' } }
   });
 
-  // ==============================
-  // CHAPTER 3 · THOUGHT & LOVE
-  // ==============================
-
   S.ch3_intro = textScene({
-    chapter:'Book III', roman:'Thought & Love', title:'Thought & Love',
-    paras:[
-      'In your third year, an old man with a specimen case and a self-given title — "a watcher of trees" — pitched a tent at the grove\'s edge. He called himself Elder Hua. He said he had once tried to never land himself, but hadn\'t lasted a winter. Each week he passed you a new book. Through him, you first learned that people had been arguing for centuries about the right way to live.',
-      'That same year, Ling — the librarian\'s daughter — began climbing the wall to bring you pages she\'d copied out by hand, because her father wouldn\'t allow her to lend you the "dangerous books" himself.'
-    ],
-    next:'ch3_choiceA'
+    chapter:'BOOK THREE', roman:'III', title:'Thought and Love',
+    paras:['In the third year, an old man with a specimen box appeared at the edge of the forest, calling himself "one who watches trees." He was Elder Hua, who had once dreamed of never landing, but had not survived the first winter. He began bringing you books each week — from him, you first learned that there were people in the world who had spent centuries arguing about "how one should live."','That same year, the librarian's daughter, Poria, began climbing the wall to bring you pages she had copied by hand, for her father would not lend her "dangerous books."'],
+    next:'ch3_choiceA',
+    scene: { key: 'ch3', options: { particles: 'leaves' } },
+    character: { url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80', name: 'Elder Hua', position: 'left' }
   });
 
   S.ch3_choiceA = choiceScene({
-    chapter:'Book III', roman:'Thought & Love', title:'Thought & Love',
-    paras:['Faced with the centuries-old arguments Elder Hua kept bringing you — which one actually mattered?'],
+    chapter:'BOOK THREE', roman:'III', title:'Thought and Love',
+    paras:['Facing these questions that Elder Hua brought — questions that had been argued for centuries — which one truly matters to you?'],
     options:[
-      { label:'How to last longer up here. How to live more steadily.',
-        stat:'freedom', delta:2,
-        reaction:'You told Elder Hua the theory could wait. You had a roof to patch before the rains came.',
-        next:'ch3_choiceB' },
-      { label:'Use the canopy as a desk above the world — start writing letters.',
-        stat:'wisdom', delta:2,
-        reaction:'Your first letter went to a scholar in a distant city you had never met.',
-        next:'ch3_choiceB' },
-      { label:'You cared more about the stories Ling brought than any philosophy Elder Hua carried.',
-        stat:'bond', delta:2,
-        reaction:'You found yourself listening for the sound of her crossing the wall more than for the lamp in his tent that always burned late.',
-        next:'ch3_choiceB' }
-    ]
+      { label:'How to live longer and more steadily in the trees', stat:'freedom', delta:2,
+        reaction:'You told Elder Hua that theory could wait — first, fix the roof before the next rainy season.', next:'ch3_choiceB' },
+      { label:'Turn the canopy into a desk overlooking the era, and begin writing letters', stat:'wisdom', delta:2,
+        reaction:'Your first letter went to a scholar you had never met, living in a distant city.', next:'ch3_choiceB' },
+      { label:'Care more about Poria's stories than Elder Hua's theories', stat:'bond', delta:2,
+        reaction:'You began anticipating the sound of footsteps over the wall more than the lamp that burned late in the tent.', next:'ch3_choiceB' }
+    ],
+    scene: { key: 'ch3', options: { particles: 'leaves' } },
+    character: { url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80', name: 'Elder Hua', position: 'left' }
   });
 
   S.ch3_choiceB = choiceScene({
-    chapter:'Book III', roman:'Thought & Love', title:'Thought & Love',
-    paras:['And Ling — what were you going to do about that?'],
+    chapter:'BOOK THREE', roman:'III', title:'Thought and Love',
+    paras:['What do you intend to do about this thing between you and Poria?'],
     options:[
-      { label:'Keep your distance. Afraid of owing someone a reason to come down.',
-        stat:'freedom', delta:2,
-        reaction:'Every feeling you noticed, you quietly filed under: be more careful.',
-        next:'ch4_intro' },
-      { label:'Carve arguments about what freedom really means into the bark, together.',
-        stat:'wisdom', delta:2,
-        reaction:'The tree\'s bark slowly filled with the handwriting of two people — like a contract no one else could read.',
-        next:'ch4_intro' },
-      { label:'Build the most solid bridge in the whole grove, going only to her rooftop.',
-        stat:'bond', delta:2,
-        reaction:'She said it was the clumsiest, most earnest "I like you" she had ever seen.',
-        next:'ch4_intro' }
-    ]
+      { label:'Keep your distance — afraid of owing a debt that might require you to descend for someone', stat:'freedom', delta:2,
+        reaction:'You quietly recorded every flutter of your heart as a reason to be more careful.', next:'ch4_intro' },
+      { label:'Carve the bark with endless debates about what freedom truly means', stat:'wisdom', delta:2,
+        reaction:'The bark of that tree gradually filled with two people's handwriting, like a contract no one could read.', next:'ch4_intro' },
+      { label:'Build her the most stable bridge in the forest, leading only to her rooftop', stat:'bond', delta:2,
+        reaction:'She said it was the most clumsy and most earnest "I love you" she had ever seen.', next:'ch4_intro' }
+    ],
+    scene: { key: 'ch3', options: { particles: 'leaves', mist: true } },
+    character: { url: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&q=80', name: 'Poria', position: 'right' }
   });
 
-  // ==============================
-  // CHAPTER 4 · THE FIRE
-  // ==============================
-
   S.ch4_intro = textScene({
-    chapter:'Book IV', roman:'The Fire', title:'The Fire',
-    paras:[
-      'The winter you turned thirty, a fire broke out at the grove\'s edge — no one could say whether it was lightning or a neighbour\'s brazier. The town\'s wells weren\'t enough. Your father\'s freight warehouse was the first to catch. Ling\'s father ran in to rescue the ledgers and was trapped by smoke in the attic.',
-      'People across the whole grove were calling your name. For the first time in nineteen years, someone genuinely needed you to answer: would you — for any one person — put your feet back on the ground?'
-    ],
-    next:'ch4_choice'
+    chapter:'BOOK FOUR', roman:'IV', title:'The Storm',
+    paras:['That winter, at thirty, a rare fire broke out at the edge of the forest — no one knew if it was lightning or someone's charcoal stove. The town's wells were insufficient; your father's freight warehouse was the first to catch fire. Poria's father rushed in to save the ledgers and was trapped by smoke in the attic.','Everyone in the forest was calling your name. For the first time in nineteen years, someone truly needed you to answer: Would you be willing, for anyone at all, to set your feet back on the ground?'],
+    next:'ch4_choice',
+    scene: { key: 'ch4', options: { particles: 'embers', fire: true, mist: false } }
   });
 
   S.ch4_choice = choiceScene({
-    chapter:'Book IV', roman:'The Fire', title:'The Fire',
-    paras:['The firelight lit the earth beneath you — ground you hadn\'t touched in nineteen years.'],
+    chapter:'BOOK FOUR', roman:'IV', title:'The Storm',
+    paras:['The firelight illuminated the ground beneath your feet — land untouched for nineteen years.'],
     options:[
-      { label:'Step down. Run into the fire.',
-        special:'ending_ground' },
-      { label:'You hold yourself in the air. You don\'t jump. You start looking for another way.',
-        next:'ch4_climb' }
-    ]
+      { label:'Set foot on the ground and rush into the fire', special:'ending_ground' },
+      { label:'Feet hovering in midair — but you do not jump. You begin to think of another way', next:'ch4_climb' }
+    ],
+    scene: { key: 'ch4', options: { particles: 'embers', fire: true, mist: false } }
   });
 
   S.ch4_climb = textScene({
-    chapter:'Book IV', roman:'The Fire',
-    paras:['Everything you had learned across nineteen years came to you at once — knots, load-bearing, and the one person who had always been waiting for an answer. You knew. The answer had been writing itself slowly across all of those years.'],
-    next:'__compute_ending__'
+    chapter:'BOOK FOUR', roman:'IV',
+    paras:['Everything you had learned in nineteen years flooded in at once — knots, mechanics, and the person who had been waiting for your answer. You knew the answer had been written slowly, all along.'],
+    next:'__compute_ending__',
+    scene: { key: 'ch4', options: { particles: 'embers', fire: true } }
   });
 
-  // ==============================
-  // ENDINGS
-  // ==============================
-
-  S.ending_freedom = endingScene('freedom', 'Evergreen', 'The Man Who Became a Moving Tree', [
-    'You didn\'t reach for any rooftop. Instead you turned nineteen years of balance and memory into a map only you could read — directing the townspeople through smoke, threading bucket after bucket through your pulley network into the fire, your feet never touching a single inch of earth.',
-    'By the morning the fire was out, the townspeople had stopped asking when you were coming down. They started writing you into books as someone who had truly, fully lived.',
-    'Years later, one autumn, you walked a newly-strung rope bridge into the deep of the grove and kept walking. No one ever saw you come back. They say you finally turned yourself into a tree that moved.'
+  // ===================== Endings =====================
+  S.ending_freedom = endingScene('freedom','Into Evergreen','A Tree That Moves',[
+    'You did not reach for any rooftop. Instead, you turned nineteen years of balance and canopy memory into an escape map only you could read — directing the townspeople from above the smoke, sending buckets along your pulleys into the fire, never once stepping onto the ground.',
+    'The morning the fire was contained, the townspeople did not ask "when will you come down" for the first time. Instead, they began writing you into textbooks as someone who had truly lived.',
+    'Many years later, one autumn, you followed a newly built rope bridge deep into the forest and walked farther and farther — no one ever saw you return. People say you finally became a tree that moves.'
   ]);
 
-  S.ending_wisdom = endingScene('wisdom', 'Letters', 'A Centre That Stands on No Ground', [
-    'In the fire, you didn\'t think about escape — you thought about structure. Using what Elder Hua had taught you, you calculated in ten minutes which section of the warehouse roof would collapse first, and called out the only correct evacuation route. Nobody was hurt.',
-    'After the fire, you began turning all those years of fumbling with "how to live without landing" into letters sent to universities far away. You never received a title.',
-    'But years later, strangers would mention in footnotes "the correspondent in the trees of Haiting" — you spent a life proving that a person can stand nowhere on the ground, and still stand at the centre of the world.'
+  S.ending_wisdom = endingScene('wisdom','Letters to the World','A Center Not on the Ground',[
+    'In the fire, you did not think of escape but of structure — using Elder Hua's mechanics, you calculated in ten minutes which section of the warehouse roof would collapse first, and called out the only correct evacuation route. No one was hurt.',
+    'After the fire, you began systematically writing down the clumsy methods of "how to live without landing" in letters to distant universities. You never held any title.',
+    'But many years later, strangers you never met would mention "the correspondent in the trees of Haiting" in their footnotes — you spent a lifetime proving that one can stand at the center of the world without standing on the ground.'
   ]);
 
-  S.ending_bond = endingScene('bond', 'Bridges', 'Closer Than Anyone Else', [
-    'The first thing you thought of wasn\'t data or an evacuation route — it was Ling. You ran the bridge as fast as the ropes would carry you — the only one that led to her rooftop — and pulled her and her father\'s ledgers from the attic. Your feet never touched the ground.',
-    'The fire took half the warehouse, but burned away the last of the distance between you and the town. In the years that followed you built more and more bridges, until they connected half the rooftops in Haiting.',
-    'Children stopped saying "the strange man in the trees" and started saying "go find him at the bridge." You never landed once. And yet you lived closer to other people than anyone else in town.'
+  S.ending_bond = endingScene('bond','The Bridge Between Trees','Closer to Others Than Anyone',[
+    'The first thing you thought of was not data, not escape routes, but Poria — you raced along the bridge that led only to her rooftop and pulled her and her father's ledgers from the attic, never once touching the ground.',
+    'The fire burned half the warehouse, but it also burned away the last barrier between you and the town. In the days that followed, you built more and more bridges, gradually connecting half the rooftops in town.',
+    'Children no longer said "the strange man in the trees" but "go find him by the bridge." You never landed once, yet you lived closer to others than anyone in town.'
   ]);
 
-  S.ending_ground = endingScene('ground', 'The Day I Decided', 'On My Own Terms', [
-    'You didn\'t stop to think. You stepped down — the first time in nineteen years. The ground was hard and warm with fire, carrying a weight you had never felt before: the weight of belonging to others.',
-    'You ran in and dragged Ling\'s father out. A falling beam caught your foot. When it healed, you could have gone back to the tree. You didn\'t — not because you had lost, but because you finally understood: the vow had never been about never coming down. It had been about deciding for yourself when you did.',
-    'The townspeople rarely mentioned your nineteen years after that. But Ling remembered. She said the look on your face when you stepped down was the freest you had ever seemed.'
+  S.ending_ground = endingScene('ground','The Day You Decided','By My Own Choice',[
+    'Without thinking, your foot touched the ground — for the first time in nineteen years. The ground was hard, and hot, carrying a weight you had never felt before, the weight of "others."',
+    'You rushed into the fire and dragged Poria's father out, your own foot injured by a collapsing beam. After healing, you could have returned to the trees, but you did not — not because you had lost, but because you finally understood that the original vow was never about "never coming down," but about "when to come down, by my own choice."',
+    'The townspeople rarely spoke of your nineteen years afterward, but Poria remembered. She said the moment you descended was more like a free person than any day you spent in the trees.'
   ]);
 
   function computeEnding(){
@@ -620,15 +813,49 @@
     return 'ending_' + best;
   }
 
+  // ===================== Engine =====================
   function goto(id){
     if(id === '__compute_ending__'){ id = computeEnding(); }
     var scene = S[id];
-    document.getElementById('sceneRoot').innerHTML = scene.render();
-    if(scene.bind){ scene.bind(); }
+    if(!scene) { console.error('Scene not found:', id); return; }
+
+    var root = document.getElementById('sceneRoot');
+    if(!root) { console.error('sceneRoot not found'); return; }
+
+    if(scene.scene){ setScene(scene.scene.key, scene.scene.options); }
+    if(scene.character){ showCharacter(scene.character.url, scene.character.name, scene.character.position); }
+    else { showCharacter(null); }
+
+    try { root.innerHTML = scene.render(); }
+    catch(e) { console.error('Render error:', e); root.innerHTML = '<div class="page"><p>Loading error. Please refresh the page.</p></div>'; return; }
+
+    if(scene.bind){
+      try { scene.bind(); }
+      catch(e) { console.error('Bind error:', e); }
+    }
     window.scrollTo({top:0, behavior:'instant'});
   }
 
-  goto('cover');
+  // ===================== Init =====================
+  function init(){
+    try {
+      setScene('cover', { particles: 'leaves', mist: true });
+      goto('cover');
+      setTimeout(function(){
+        var loading = document.getElementById('loadingScreen');
+        if(loading) loading.classList.add('hidden');
+      }, 1500);
+    } catch(e) {
+      console.error('Init error:', e);
+      document.getElementById('sceneRoot').innerHTML = '<div class="page"><p>Initialization failed. Please refresh.</p></div>';
+    }
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else { init(); }
+
+  document.addEventListener('click', function(){ initAudio(); }, { once: true });
 
 })();
 </script>
